@@ -1,0 +1,16 @@
+<root>
+  <base>
+    <hospital_code><![CDATA[H0003]]></hospital_code>
+    <patient_id><![CDATA[{{ts}}]]></patient_id>
+    <event_no><![CDATA[{{ts}}]]></event_no>
+    <source><![CDATA[住院]]></source>
+  </base>
+  <doc_id><![CDATA[doc1]]></doc_id>
+  <doc_name><![CDATA[医生姓名1]]></doc_name>
+  <orders>
+  <medical_order_item>
+      <order_id><![CDATA[o1_{{tf1}}]]></order_id>
+      <group_no><![CDATA[{{gp}}]]></group_no>
+  </medical_order_item>
+  </orders>
+</root>
