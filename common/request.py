@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # @Time : 2019/8/6 13:59
 # @Author : wangmengmeng
 import requests
@@ -39,3 +38,7 @@ class HttpRequest:
         data = json.dumps(data)
         headers = {"Content-Type": "application/json"}
         return self.s.put(url, data, headers=headers)
+
+    def req(self):
+        """封装post和get请求"""
+        pass

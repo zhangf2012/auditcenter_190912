@@ -1,0 +1,14 @@
+# 这里可以写注释
+-
+  desc: 接口描述
+  api: /api/v1/auditcenter
+  method: post
+  data: 123451a
+  assert_code: 200
+  assert_in_text: joseph2a
+
+-
+  username: joseph1b
+  passwd: 123456b
+  cpasswd: 123457b
+  name: null
