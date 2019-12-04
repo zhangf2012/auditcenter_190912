@@ -51,7 +51,7 @@ selenium==3.141.0
 service-identity==18.1.0
 six==1.12.0
 Twisted==19.2.1
-urllib3==1.24.1
+urllib3==1.24.2
 virtualenv==16.7.4
 w3lib==1.20.0
 wcwidth==0.1.7
