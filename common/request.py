@@ -4,6 +4,7 @@ import requests
 import json
 from common.login import Login
 from common.logger import log
+from requests import session
 
 
 class HttpRequest:
@@ -39,6 +40,13 @@ class HttpRequest:
         headers = {"Content-Type": "application/json"}
         return self.s.put(url, data, headers=headers)
 
-    def req(self):
+    def req(self, url, method, data=None, params=None, headers=None):
         """封装post和get请求"""
-        pass
+        if method == 'post':
+            return self.s.post(url=url, data=data, headers=headers)
+
+        elif method == 'get':
+            return self.s.get(url=url, params=params, headers=headers)
+
+        else:
+            return self.s.put(url=url, data=data, headers=headers)
