@@ -1,6 +1,6 @@
 # 这里可以写注释
 -
-  desc: 门诊科室
+  desc: 查询门诊科室
   api: /api/v1/deptForReport
   method: get
   data: null
@@ -12,7 +12,7 @@
   assert_code: 200
  # assert_in_text: joseph2a
 -
-  desc: 住院科室
+  desc: 查询住院科室
   api: /api/v1/deptForReport
   method: get
   data: null
