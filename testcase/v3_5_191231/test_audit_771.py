@@ -4,7 +4,10 @@
 import pytest
 
 
+# from pytest_assume.plugin import assume
+
 class TestIptReturnDrug:
+    """有效药嘱、合用药嘱在引擎中的规则提取逻辑、执行逻辑调整"""
 
     # @pytest.mark.skip(reason='just skip')
     @pytest.mark.parametrize("xml1,xml2,xml3,expected", [('audit771_1', 'audit771_2', 'audit771_3', 7),
