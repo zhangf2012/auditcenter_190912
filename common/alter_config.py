@@ -15,7 +15,7 @@ class AlterConfig:
         url = self.conf.get('login', 'address') + '/syscenter/api/v1/config/updateConfig?id=' + str(id) + '&type=input'
         data = value
         response = self.request.put(url, data).json()
-        print(response)
+        return response
 
     def alter_default_setting(self, id, code, name, is_use, value):
         url = self.conf.get('login', 'address') + '/syscenter/api/v1/config/updateDefaultSetting'
@@ -38,5 +38,5 @@ class AlterConfig:
 
 if __name__ == '__main__':
     ac = AlterConfig()
-    ac.alter_sys_config(40003, 1)
-    ac.alter_default_setting(87,'whether_dialysis', '是否透析',1,1)
+    ac.alter_sys_config(40009, 2)
+    # ac.alter_default_setting(87,'whether_dialysis', '是否透析',1,1)

@@ -22,3 +22,12 @@
   headers:
     Content-Type: application/json
   assert_code: 200
+-
+  desc: 系统消息获取待审任务条数
+  api: /api/v1/newTaskHint
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
