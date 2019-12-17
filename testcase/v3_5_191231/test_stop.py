@@ -9,6 +9,7 @@ from common.ipt import Ipt
 
 
 class TestStop(unittest.TestCase):
+    """住院停嘱测试用例"""
     def setUp(self):
         warnings.simplefilter("ignore", ResourceWarning)
         self.ipt = Ipt()

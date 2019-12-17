@@ -161,6 +161,7 @@ class Ipt:
             }
         return self.request.post_json(url, param)
 
+
     def get_patient(self, engineid, type):
         """获取住院患者信息"""
         if type == 0:
