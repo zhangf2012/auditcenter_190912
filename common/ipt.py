@@ -4,6 +4,7 @@
 from common.request import HttpRequest
 from config.read_config import ReadConfig
 from common.send_data import SendData
+from common.connect_db import ConnectDB
 import time
 
 
@@ -21,6 +22,11 @@ class Ipt:
         self.send = SendData()
         self.conf = ReadConfig()
         self.request = HttpRequest()
+        self.db = ConnectDB()
+        self.conn = self.db.connect(self.db.db_sys)
+        self.cur = self.db.get_cur(self.conn)
+        sql = self.conf.get('sql', 'zoneid')
+        self.zoneid = (self.db.execute(self.cur, sql))[0]
 
     @wait
     def selNotAuditIptList(self):
@@ -125,6 +131,36 @@ class Ipt:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/herbOrderList' + '?id=' + str(engineid)
         return self.request.get(url)
 
+    def mergeEngineMsgList(self, engineid, type, gno):
+        """获取医嘱详情右侧的审核记录、警示信息等信息"""
+        ol = self.orderList(engineid, type)
+        medicalIds = [i['id'] for i in ol['data'][gno]]
+        medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
+        if type == 0:
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/mergeEngineMsgList'
+            param = {
+                "auditWay": 2,
+                "engineId": engineid,
+                "zoneId": self.zoneid,
+                "groupNo": gno,
+                "medicalIds": medicalIds,
+                "medicalHisIds": medicalHisIds,
+                "herbMedicalIds": [],
+                "herbMedicalHisIds": []
+            }
+        else:
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/mergeEngineMsgList'
+            param = {
+                "engineId": engineid,
+                "zoneId": self.zoneid,
+                "groupNo": gno,
+                "medicalIds": medicalIds,
+                "medicalHisIds": medicalHisIds,
+                "herbMedicalIds": [],
+                "herbMedicalHisIds": []
+            }
+        return self.request.post_json(url, param)
+
     def get_patient(self, engineid, type):
         """获取住院患者信息"""
         if type == 0:
@@ -142,12 +178,11 @@ class Ipt:
         return self.request.get(url)
 
 
-
 if __name__ == '__main__':
     ipt = Ipt()
     ipt.send.send('ipt', '医嘱一', 1)
     ipt.send.send('ipt', '医嘱二', 1)
     res = ipt.get_engineid(1)
     print(res)
-    res =ipt.get_engineid(2)
+    res = ipt.get_engineid(2)
     print(res)
