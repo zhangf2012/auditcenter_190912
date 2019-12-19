@@ -48,7 +48,7 @@ class TestGanyuIpt:
         expected = None
         assert actual == expected
 
-    def test_ipt_modify(self,zy):
+    def test_ipt_modify(self, zy):
         zy.send.send('ipt', 'audit673_1', 1)
         zy.send.send('ipt', 'audit673_2', 1)
         zy.send.send('ipt', 'audit673_6', 1)
@@ -57,3 +57,63 @@ class TestGanyuIpt:
         actual = res['data']['groupAudits']
         expected = None
         assert actual == expected
+
+
+class TestGanyuOpt:
+    """门诊双签理由展示测试用例"""
+
+    def test_wait_opt_01(self, mz):
+        """待审页面当前任务"""
+        mz.send.send('opt', 'audit673_7', 1)
+        mz.send.send('opt', 'audit673_8', 1)
+        engineid1 = mz.get_engineid(1)
+        res = mz.mergeAuditResult(engineid1, engineid1, 0)
+        actual = len(res['data'])
+        expected = 1
+        assert actual == expected
+
+    def test_wait_opt_02(self, mz):
+        """待审页面当前任务"""
+        mz.send.send('opt', 'audit673_9', 1)
+        engineid1 = mz.get_engineid(1)
+        res = mz.mergeAuditResult(engineid1, engineid1, 0)
+        actual = len(res['data'])
+        expected = 1
+        assert actual == expected
+
+    def test_opt_merge_01(self, mz):
+        """待审页面合并任务"""
+        mz.send.send('opt', 'audit673_10', 1)
+        mz.send.send('opt', 'audit673_11', 1)
+        mz.send.send('opt', 'audit673_12', 1)
+        engineid1 = mz.get_engineid(1)
+        engineid2 = mz.get_engineid(2)
+        res = mz.mergeAuditResult(engineid1, engineid2, 0)
+        actual = len(res['data'])
+        expected = 1
+        assert actual == expected
+
+    def test_opt_merge_02(self, mz):
+        """待审页面合并任务"""
+        mz.send.send('opt', 'audit673_11', 1)
+        mz.send.send('opt', 'audit673_13', 1)
+        mz.send.send('opt', 'audit673_12', 1)
+        engineid1 = mz.get_engineid(1)
+        engineid2 = mz.get_engineid(2)
+        res = mz.mergeAuditResult(engineid1, engineid2, 0)
+        actual = res['data']
+        expected = None
+        assert actual == expected
+
+    def test_opt_modify(self, mz):
+        mz.send.send('opt', 'audit673_10', 1)
+        mz.send.send('opt', 'audit673_11', 1)
+        mz.send.send('opt', 'audit673_14', 1)
+        engineid1 = mz.get_engineid(1)
+        res = mz.mergeAuditResult(engineid1, engineid1, 0)
+        actual = res['data']
+        expected = []
+        assert actual == expected
+
+
+

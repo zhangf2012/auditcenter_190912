@@ -43,6 +43,7 @@ class SendData:
                             "{{f2}}": str(self.tool.get_date(-2, 0)),
                             "{{endtoday}}":str(self.tool.get_endtoday()),
                             "{{zyhzh}}": str(self.tool.get_ts(0, 0)),  # 同ts（今天时间戳），以下增加的都是用来兼容postman数据
+                            "{{mzhzh}}": str(self.tool.get_ts(0, 0)),  # 同ts（今天时间戳），以下增加的都是用来兼容postman数据
                             "{{d2}}": str(self.tool.get_date(0, 0)),  # 同dt（今天时间）
                             "{{d1}}": str(self.tool.get_date(-1, 0)),  # 同d（昨天时间）
                             "{{d4}}": str(self.tool.get_date(-2, 0)), # 同f2（前天时间）

@@ -1,0 +1,15 @@
+<root>
+  <base>
+    <hospital_code><![CDATA[H0003]]></hospital_code>
+    <event_no><![CDATA[{{mzhzh}}]]></event_no>
+    <patient_id><![CDATA[{{mzhzh}}]]></patient_id>
+    <source><![CDATA[急诊]]></source>
+  </base>
+  <opt_feed_back>
+	<message><![CDATA[门诊消息内容]]></message>
+	<recipe_id><![CDATA[rd2_{{ts}}]]></recipe_id>
+	<doc_id><![CDATA[09]]></doc_id>
+	<doc_name><![CDATA[医生王]]></doc_name>
+  </opt_feed_back>
+
+</root>

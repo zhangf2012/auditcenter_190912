@@ -20,6 +20,7 @@ class Opt:
     def __init__(self):
         self.send = SendData()
         self.conf = ReadConfig()
+        self.auditcenter_url = self.conf.get('auditcenter', 'address')
         self.request = HttpRequest()
 
     @wait
@@ -108,4 +109,18 @@ class Opt:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/opt/optOperationList/' + str(engineid)
         else:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/opt/all/optOperationList/' + str(engineid)
+        return self.request.get(url)
+
+    def mergeAuditResult(self, recipeId, id, type):
+        """
+        获取处方的操作(干预理由、药师、医生等)记录
+        :param recipeId:  第一次跑引擎的engineid
+        :param id:  第二次跑引擎的engineid
+        :param type: type = 0代表待审页面，type = 1代表已审页面
+        :return:
+        """
+        if type == 0:
+            url = (self.auditcenter_url + "/api/v1/opt/mergeAuditResult?recipeId=%s&id=%s") % (recipeId, id)
+        else:
+            url = (self.auditcenter_url + "/api/v1/opt/all/mergeAuditResult?recipeId=%s&id=%s") % (recipeId, id)
         return self.request.get(url)
