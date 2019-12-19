@@ -3,4 +3,5 @@
 # @Author : wangmengmeng
 class TestCollectIpt:
     """住院收藏测试用例"""
-    pass
+    def test_wait_ipt(self):
+        pass
