@@ -1,0 +1,14 @@
+<root>
+  <base>
+    <hospital_code><![CDATA[H0003]]></hospital_code>
+    <event_no><![CDATA[{{zyhzh}}]]></event_no>
+    <patient_id><![CDATA[{{zyhzh}}]]></patient_id>
+    <source><![CDATA[住院]]></source>
+  </base>
+  <ipt_feed_back>
+	<message><![CDATA[住院消息内容]]></message>
+	<group_no><![CDATA[{{cgp}}]]></group_no>
+	<doc_id><![CDATA[09]]></doc_id>
+	<doc_name><![CDATA[医生王]]></doc_name>
+ </ipt_feed_back>
+</root>
