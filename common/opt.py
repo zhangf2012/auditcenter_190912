@@ -67,9 +67,10 @@ class Opt:
         :param engineid:
         :param audit_type: 0 审核打回  1 审核打回（可双签） 2 审核通过
         """
-        url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/auditSingle'
+        url = ''
         param = ''
         if audit_type == 0:
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/detailPageAuditRefuse?auditWay=2'
             param = {
                 "optRecipeId": engineid,
                 "auditResult": "打回必须修改",
@@ -77,6 +78,7 @@ class Opt:
                 "messageStatus": 0
             }
         elif audit_type == 1:
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/detailPageAuditRefuse?auditWay=2'
             param = {
                 "optRecipeId": engineid,
                 "auditResult": "打回可双签",
@@ -84,6 +86,7 @@ class Opt:
                 "messageStatus": 1
             }
         elif audit_type == 2:
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/detailPageAuditAgree?auditWay=2'
             param = {
                 "optRecipeId": engineid,
                 "auditResult": "审核通过"

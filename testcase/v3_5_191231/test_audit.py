@@ -76,18 +76,19 @@ class TestAuditOpt:
         """待审合并任务"""
         mz.send.send('mainscene', 'opt_1', 1)
         engineid1 = mz.get_engineid(1)
+        actual = []
         if audit_type is not None:
             mz.opt_audit(engineid1, audit_type)
             mz.send.send('mainscene', 'opt_2', 1)
-            engineid2 = mz.get_engineid(1)
+            engineid2 = mz.get_engineid(2)
             res = mz.mergeAuditResult(engineid1, engineid2, 0)
             actual = res['data'][0]['auditStatus']
             assert actual == expected
         else:
             mz.send.send('mainscene', 'opt_2', 1)
-            engineid2 = mz.get_engineid(1)
+            engineid2 = mz.get_engineid(2)
             res = mz.mergeAuditResult(engineid1, engineid2, 0)
-            actual = res['data'][0]['auditStatus']
+            actual = res['data']
             assert actual == expected
 
     @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
@@ -98,7 +99,6 @@ class TestAuditOpt:
         mz.opt_audit(engineid, audit_type)
         res = mz.mergeAuditResult(engineid, engineid, 1)
         actual = res['data'][0]['auditStatus']
-        expected = []
         assert actual == expected
 
     @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
@@ -108,9 +108,8 @@ class TestAuditOpt:
         engineid1 = mz.get_engineid(1)
         mz.opt_audit(engineid1, audit_type)
         mz.send.send('mainscene', 'opt_2', 1)
-        engineid2 = mz.get_engineid(1)
+        engineid2 = mz.get_engineid(2)
         mz.opt_audit(engineid2, audit_type)
-        res = mz.mergeAuditResult(engineid1, engineid2, 0)
+        res = mz.mergeAuditResult(engineid1, engineid2, 1)
         actual = res['data'][0]['auditStatus']
-        expected = []
         assert actual == expected
