@@ -43,6 +43,27 @@ class Ipt:
         res = self.request.post_json(url, param)
         return res
 
+    @wait
+    def waitIptList(self):
+        """
+        待审住院列表根据患者号查询 作用同函数selNotAuditIptList(),是其优化版本
+        :return:   通过return结果可以获得以下等数据：engineid res['data']['engineInfos'][0]['id']
+        """
+        # self.send.send('ipt', '医嘱一', 1)
+        # time.sleep(3)
+        url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/selNotAuditIptList'
+        param = {
+            "patientId": self.send.change_data['{{ts}}']
+        }
+        res = self.request.post_json(url, param)
+        engineInfos = res['data']['engineInfos']  # 待审列表的医嘱数据
+        engineMsg = []
+        engineids = []
+        if engineInfos is not None: # 待审列表有数据的时候执行下述语句
+            engineMsg = res['data']['engineInfos'][0]['engineMsg']  # 医嘱对应的警示信息
+            engineids = [i['id'] for i in res['data']['engineInfos']]  # 同一患者的所有引擎id
+        return engineInfos, engineMsg, engineids
+
     def get_engineid(self, n):
         """
         待审列表获取引擎id
@@ -160,7 +181,6 @@ class Ipt:
                 "herbMedicalHisIds": []
             }
         return self.request.post_json(url, param)
-
 
     def get_patient(self, engineid, type):
         """获取住院患者信息"""

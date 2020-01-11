@@ -2,11 +2,12 @@
 # @Time : 2019/12/17 11:10
 # @Author : wangmengmeng
 import pytest
+import allure
 
-
+@allure.feature('住院审核记录展示')
 class TestAuditIpt:
     """住院单一审核测试用例"""
-
+    @allure.story('住院待审页面当前任务')
     def test_wait_ipt(self, zy):
         """待审页面当前任务"""
         zy.send.send('mainscene', 'ipt_1', 1)
@@ -58,10 +59,10 @@ class TestAuditIpt:
         actual = res['data']['groupAudits'][0]['auditStatus']
         assert actual == expected
 
-
+@allure.feature('门诊审核记录展示')
 class TestAuditOpt:
     """门诊单一审核测试用例"""
-
+    @allure.story('门诊当前任务')
     def test_wait_opt(self, mz):
         """待审当前任务"""
         mz.send.send('mainscene', 'opt_1', 1)
@@ -76,7 +77,7 @@ class TestAuditOpt:
         """待审合并任务"""
         mz.send.send('mainscene', 'opt_1', 1)
         engineid1 = mz.get_engineid(1)
-        actual = []
+        actual = None
         if audit_type is not None:
             mz.opt_audit(engineid1, audit_type)
             mz.send.send('mainscene', 'opt_2', 1)

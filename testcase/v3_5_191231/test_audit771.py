@@ -6,8 +6,8 @@ import pytest
 
 # from pytest_assume.plugin import assume
 
-class TestIptReturnDrug:
-    """有效药嘱、合用药嘱在引擎中的规则提取逻辑、执行逻辑调整"""
+class TestIpt:
+    """住院新开 修改 删除 撤销 停止 退药测试用例 """
 
     # @pytest.mark.skip(reason='just skip')
     @pytest.mark.parametrize("xml1,xml2,xml3,expected", [('audit771_1', 'audit771_2', 'audit771_3', 7),
@@ -120,5 +120,29 @@ class TestIptReturnDrug:
                     break
         pytest.assume(actual == expected)  # 断言已审页面
 
-class TestOptReturnDrug:
-    pass
+
+class TestOpt:
+    """门诊新开 修改 删除作废 退药退费测试用例"""
+
+    def test_new_01(self):
+        pass
+
+    def test_new_02(self):
+        pass
+
+    def test_modify_01(self):
+        pass
+
+    @pytest.mark.parametrize("xmlname,expect")
+    def test_del_01(self, mz, xmlname, expect):
+        """删除作废单个处方"""
+        mz.send.send()  # 开具处方
+        mz.send.send()  # 删除作废处方
+        mz.send.send()  # 再次开具处方
+
+    def test_del_02(self):
+        """删除作废两个处方"""
+        pass
+
+    def test_return_01(self):
+        pass

@@ -1,6 +1,14 @@
-# 这里可以写注释
--
-  desc: 查询门诊科室
+# 统计报表相关接口
+- desc: 机构列表
+  api: /api/v1/zoneForReport
+  method: get
+  data: null
+  params:
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 门诊科室列表
   api: /api/v1/deptForReport
   method: get
   data: null
@@ -10,9 +18,17 @@
   headers:
     Content-Type: application/json
   assert_code: 200
- # assert_in_text: joseph2a
--
-  desc: 查询住院科室
+  # assert_in_text: 门诊
+- desc: 指定机构的医生列表
+  api: /api/v1/doctorInZone
+  method: get
+  data: null
+  params:
+    zoneId: 10
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 住院科室列表
   api: /api/v1/deptForReport
   method: get
   data: null
@@ -22,12 +38,192 @@
   headers:
     Content-Type: application/json
   assert_code: 200
--
-  desc: 系统消息获取待审任务条数
+- desc: 医疗组列表
+  api: /api/v1/docGroupForReport
+  method: get
+  data: null
+  params:
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 病区列表
+  api: /api/v1/wardForReport
+  method: get
+  data: null
+  params:
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 审方药师列表
+  api: /api/v1/auditDoctorForExport
+  method: get
+  data: null
+  params:
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 审方工作统计下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 6
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 医生处理统计下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 7
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 审方效率统计下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 8
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 审查问题统计下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 9
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+# 审核结果查看相关接口
+- desc: 已审门诊处方查看下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 5
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 已审住院医嘱查看下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 4
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+# 警示信息管理相关接口
+- desc: 用药警示管理下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 1
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+# 审方工作分析相关接口
+- desc: 用药警示管理下载列表
+  api: /api/v1/exportList
+  method: get
+  data: null
+  params:
+    exportType: 2
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+# 审方设置相关接口
+- desc: 系统消息获取待审任务条数
   api: /api/v1/newTaskHint
   method: get
   data: null
   params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 加载已有方案
+  api: /api/v1/auditPlanMap
+  method: get
+  data: null
+  params:
+    category: 1
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 费用类型
+  api: /api/v1/payTypeList
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 患者状态
+  api: /api/v1/patientCondtionList
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 分析类型与提示类型
+  api: /api/v1/analysisType
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 药品分类
+  api: /api/v1/drugCategory
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 院区列表
+  api: /api/v1/zoneList
+  method: get
+  data: null
+  params: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: ICD-10列表
+  api: /api/v1/icd10
+  method: get
+  data: null
+  params:
+    zoneId: 10
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 审方方案设置列表
+  api: /api/v1/auditPlanList
+  method: get
+  data: null
+  params:
+    pageSize: 20
+    currentPage: 1
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 药师权限设置列表
+  api: /api/v1/authPharmacistList
+  method: get
+  data: null
+  params:
+    pageSize: 20
+    currentPage: 1
   headers:
     Content-Type: application/json
   assert_code: 200

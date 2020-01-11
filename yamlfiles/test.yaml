@@ -1,13 +1,22 @@
 # 这里可以写注释
--
-  desc: 接口描述
-  username: joseph1a
-  passwd: 123451a
-  cpasswd: 123457a
-  name: joseph2a
-
--
-  username: joseph1b
-  passwd: 123456b
-  cpasswd: 123457b
-  name: null
+- desc: 机构列表
+  api: /api/v1/zoneForReport
+  method: get
+  data:
+    - test1
+    - test2
+  params:
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+- desc: 门诊科室列表
+  api: /api/v1/deptForReport
+  method: get
+  data: null
+  params:
+    type: 1
+    keyword: null
+  headers:
+    Content-Type: application/json
+  assert_code: 200

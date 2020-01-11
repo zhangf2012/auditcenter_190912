@@ -39,6 +39,28 @@ class Opt:
         res = self.request.post_json(url, param)
         return res
 
+    @wait
+    def waitOptList(self, num):
+        """
+        待审门诊列表根据处方号查询
+        :return:   通过return结果可以获得以下数据：engineid res['data']['engineInfos'][0]['id']
+        """
+        # self.send.send('ipt', '医嘱一', 1)
+        # time.sleep(3)
+        url = self.conf.get('auditcenter', 'address') + '/api/v1/opt/selNotAuditOptList'
+        recipeno = 'r' + ''.join(str(num)) + '_' + self.send.change_data['{{ts}}']
+        param = {
+            "recipeNo": recipeno
+        }
+        res = self.request.post_json(url, param)
+        optRecipeList = res['data']['optRecipeList']  # 待审列表的处方数据
+        infos = []
+        engineid = ''
+        if optRecipeList is not None:  # 待审列表的处方不为空的时候执行下述语句
+            infos = res['data']['optRecipeList'][0]['infos']
+            engineid = res['data']['optRecipeList'][0]['optRecipe']['id']
+        return optRecipeList, infos, engineid
+
     def get_engineid(self, num):
         """
         待审列表获取引擎id

@@ -1,0 +1,11 @@
+-
+  desc: 药品属性
+  api: /api/v1/dictionaryDataTree
+  method: get
+  data: null
+  params:
+    categoryCode: sys_dictcate_shux_rule
+  headers:
+    Content-Type: application/json
+  assert_code: 200
+
