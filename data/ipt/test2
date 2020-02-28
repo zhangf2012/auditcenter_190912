@@ -48,6 +48,7 @@
       <order_doc_id><![CDATA[09]]></order_doc_id>
       <order_doc_name><![CDATA[王瑞]]></order_doc_name>
       <order_doc_title><![CDATA[231]]></order_doc_title>
+      <order_status><![CDATA[0]]></order_status>
       <order_type><![CDATA[1]]></order_type>
       <drug_purpose><![CDATA[药嘱目的]]></drug_purpose>
       <group_no><![CDATA[{{gp}}]]></group_no>
@@ -79,8 +80,6 @@
       <skin_test_time><![CDATA[{{df1}}]]></skin_test_time>
       <skin_test_flag><![CDATA[0]]></skin_test_flag>
       <skin_test_result><![CDATA[阴性]]></skin_test_result>
-      <drug_return_flag><![CDATA[0]]></drug_return_flag>
-      <stop_flag><![CDATA[0]]></stop_flag>
       <pivas_flag><![CDATA[0]]></pivas_flag>
       <urgent_flag><![CDATA[0]]></urgent_flag>
       <exe_dept_id><![CDATA[zx1]]> </exe_dept_id>
@@ -99,6 +98,7 @@
       <order_doc_id><![CDATA[09]]></order_doc_id>
       <order_doc_name><![CDATA[王瑞]]></order_doc_name>
       <order_doc_title><![CDATA[231]]></order_doc_title>
+       <order_status><![CDATA[0]]></order_status>
       <order_type><![CDATA[1]]></order_type>
       <drug_purpose><![CDATA[药嘱目的]]></drug_purpose>
       <group_no><![CDATA[{{cgp}}]]></group_no>
@@ -130,8 +130,6 @@
       <skin_test_time><![CDATA[{{df1}}]]></skin_test_time>
       <skin_test_flag><![CDATA[0]]></skin_test_flag>
       <skin_test_result><![CDATA[阴性]]></skin_test_result>
-      <drug_return_flag><![CDATA[0]]></drug_return_flag>
-      <stop_flag><![CDATA[0]]></stop_flag>
       <pivas_flag><![CDATA[0]]></pivas_flag>
       <urgent_flag><![CDATA[0]]></urgent_flag>
       <exe_dept_id><![CDATA[zx1]]> </exe_dept_id>

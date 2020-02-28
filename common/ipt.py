@@ -25,8 +25,11 @@ class Ipt:
         self.db = ConnectDB()
         self.conn = self.db.connect(self.db.db_sys)
         self.cur = self.db.get_cur(self.conn)
+        username = self.conf.get('login', 'username')
         sql = self.conf.get('sql', 'zoneid')
         self.zoneid = (self.db.execute(self.cur, sql))[0]
+        # sql_uid = self.conf.get('sql', 'userid')
+        # self.uid = (self.db.execute_pid(self.cur, sql_uid, username))[0]
 
     @wait
     def selNotAuditIptList(self):
@@ -59,7 +62,7 @@ class Ipt:
         engineInfos = res['data']['engineInfos']  # 待审列表的医嘱数据
         engineMsg = []
         engineids = []
-        if engineInfos is not None: # 待审列表有数据的时候执行下述语句
+        if engineInfos is not None:  # 待审列表有数据的时候执行下述语句
             engineMsg = res['data']['engineInfos'][0]['engineMsg']  # 医嘱对应的警示信息
             engineids = [i['id'] for i in res['data']['engineInfos']]  # 同一患者的所有引擎id
         return engineInfos, engineMsg, engineids
@@ -155,8 +158,17 @@ class Ipt:
     def mergeEngineMsgList(self, engineid, type, gno):
         """获取医嘱详情右侧的审核记录、警示信息等信息"""
         ol = self.orderList(engineid, type)
-        medicalIds = [i['id'] for i in ol['data'][gno]]
-        medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
+        hl = self.herbOrderList(engineid, type)
+        medicalIds = []
+        medicalHisIds = []
+        herbMedicalIds = []
+        herbMedicalHisIds = []
+        if ol['data']:
+            medicalIds = [i['id'] for i in ol['data'][gno]]
+            medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
+        if hl['data']:
+            herbMedicalIds = [i['drugId'] for i in hl['data'][0]['itemList']]
+            herbMedicalHisIds = [i['herbMedicalId'] for i in hl['data'][0]['itemList']]
         if type == 0:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/mergeEngineMsgList'
             param = {
@@ -166,8 +178,8 @@ class Ipt:
                 "groupNo": gno,
                 "medicalIds": medicalIds,
                 "medicalHisIds": medicalHisIds,
-                "herbMedicalIds": [],
-                "herbMedicalHisIds": []
+                "herbMedicalIds": herbMedicalIds,
+                "herbMedicalHisIds": herbMedicalHisIds
             }
         else:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/mergeEngineMsgList'
@@ -177,8 +189,8 @@ class Ipt:
                 "groupNo": gno,
                 "medicalIds": medicalIds,
                 "medicalHisIds": medicalHisIds,
-                "herbMedicalIds": [],
-                "herbMedicalHisIds": []
+                "herbMedicalIds": herbMedicalIds,
+                "herbMedicalHisIds": herbMedicalHisIds
             }
         return self.request.post_json(url, param)
 
@@ -197,6 +209,20 @@ class Ipt:
         else:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/operationList' + '?id=' + str(engineid)
         return self.request.get(url)
+
+    def isIptCollected(self, engineid, gno):
+        ol = self.orderList(engineid, type)
+        medicalIds = [i['id'] for i in ol['data'][gno]]
+        medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
+        url = self.conf.get('auditcenter', 'address') + '/api/v1/collect/isIptCollected'
+        param = {
+            "collectPeopleId": self.uid,
+            "engineId": engineid,
+            "groupNo": gno,
+            "herbMedicalIds": [],
+            "medicalIds": medicalIds
+        }
+        return self.request.post_json(url, param)
 
 
 if __name__ == '__main__':

@@ -27,10 +27,8 @@ class Opt:
     def selNotAuditOptList(self, num):
         """
         待审门诊列表根据处方号查询
-        :return:   通过return结果可以获得以下数据：engineid res['data']['engineInfos'][0]['id']
+        :return:   通过return结果可以获得以下数据：engineid res['data']['optRecipeList'][0]['id']
         """
-        # self.send.send('ipt', '医嘱一', 1)
-        # time.sleep(3)
         url = self.conf.get('auditcenter', 'address') + '/api/v1/opt/selNotAuditOptList'
         recipeno = 'r' + ''.join(str(num)) + '_' + self.send.change_data['{{ts}}']
         param = {
@@ -43,7 +41,7 @@ class Opt:
     def waitOptList(self, num):
         """
         待审门诊列表根据处方号查询
-        :return:   通过return结果可以获得以下数据：engineid res['data']['engineInfos'][0]['id']
+        :return:   通过return结果可以获得以下数据：engineid res['data']['optRecipeList'][0]['id']
         """
         # self.send.send('ipt', '医嘱一', 1)
         # time.sleep(3)
@@ -64,7 +62,7 @@ class Opt:
     def get_engineid(self, num):
         """
         待审列表获取引擎id
-        :param n: 如果某患者有多条待审任务则会有多个引擎id，n代表取第几个引擎id
+        :param num: 根据处方号获取引擎id，注意看xml中处方号r后拼接的是1还是2
         :return:
         """
         res = self.selNotAuditOptList(num)

@@ -102,7 +102,7 @@ class TestGanyuOpt:
         engineid2 = mz.get_engineid(2)
         res = mz.mergeAuditResult(engineid1, engineid2, 0)
         actual = res['data']
-        expected = None
+        expected = []
         assert actual == expected
 
     def test_opt_modify(self, mz):

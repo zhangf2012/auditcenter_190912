@@ -55,7 +55,7 @@
       <recipe_fee_total><![CDATA[44.55]]></recipe_fee_total>
       <original_recipe_id><![CDATA[]]></original_recipe_id>
       <recipe_status><![CDATA[0]]></recipe_status>
-    <urgent_flag><![CDATA[1]]></urgent_flag>
+      <urgent_flag><![CDATA[1]]></urgent_flag>
       <pharmacy_id><![CDATA[123456]]></pharmacy_id>
       <pharmacy_name><![CDATA[发药药房名称]]></pharmacy_name>
     </opt_prescription_info>
@@ -89,7 +89,6 @@
       <skin_test_result><![CDATA[皮试结果]]></skin_test_result>
       <skin_test_time><![CDATA[{{d2}}]]></skin_test_time>
       <drug_source><![CDATA[1]]></drug_source>
-      <drug_return_flag><![CDATA[0]]></drug_return_flag>
       <ouvas_flag><![CDATA[1]]></ouvas_flag>
       <infusion_speed><![CDATA[20滴/分钟]]></infusion_speed>
 	  <limit_time><![CDATA[限用时间]]></limit_time>
@@ -126,7 +125,6 @@
       <skin_test_result><![CDATA[皮试结果]]></skin_test_result>
       <skin_test_time><![CDATA[{{d2}}]]></skin_test_time>
       <drug_source><![CDATA[1]]></drug_source>
-      <drug_return_flag><![CDATA[0]]></drug_return_flag>
       <ouvas_flag><![CDATA[0]]></ouvas_flag>
      </opt_prescription_item>
   </opt_prescription>

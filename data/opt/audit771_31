@@ -42,7 +42,7 @@
       <manufacturer_id><![CDATA[12]]></manufacturer_id>
       <manufacturer_name><![CDATA[西安杨森制药有限公司]]></manufacturer_name>
       <drug_dose><![CDATA[0.25g]]></drug_dose>
-      <drug_admin_route_name><![CDATA[皮试]]></drug_admin_route_name>
+      <drug_admin_route_name><![CDATA[口服]]></drug_admin_route_name>
       <drug_using_freq><![CDATA[bid]]></drug_using_freq>
       <drug_using_time_point><![CDATA[餐前]]></drug_using_time_point>
       <drug_using_aim><![CDATA[治疗]]></drug_using_aim>
@@ -60,6 +60,7 @@
       <skin_test_result><![CDATA[皮试结果]]></skin_test_result>
       <skin_test_time><![CDATA[{{d2}}]]></skin_test_time>
       <drug_source><![CDATA[1]]></drug_source>
+      <drug_return_flag><![CDATA[0]]></drug_return_flag>
       <ouvas_flag><![CDATA[1]]></ouvas_flag>
       <infusion_speed><![CDATA[20滴/分钟]]></infusion_speed>
 	  <limit_time><![CDATA[限用时间]]></limit_time>
