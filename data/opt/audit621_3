@@ -38,7 +38,7 @@
   <opt_prescription>
     <opt_prescription_info>
       <recipe_id><![CDATA[r_{{ts}}]]></recipe_id>
-      <recipe_no><![CDATA[rn_{{ts}}]]></recipe_no>
+      <recipe_no><![CDATA[r1_{{ts}}]]></recipe_no>
       <recipe_source><![CDATA[急诊]]></recipe_source>
       <recipe_category><![CDATA[普通处方]]></recipe_category>
       <recipe_type><![CDATA[西药方]]></recipe_type>
