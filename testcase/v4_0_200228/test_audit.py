@@ -72,7 +72,8 @@ class TestAuditOpt:
         expected = []
         assert actual == expected
 
-    @pytest.mark.parametrize("audit_type,expected", [(None, None), (0, 0), (1, 0), (2, 1)])
+
+    @pytest.mark.parametrize("audit_type,expected", [(None, []), (0, 0), (1, 0), (2, 1)])
     def test_opt_wait_merge(self, mz, audit_type, expected):
         """待审合并任务"""
         mz.send.send('mainscene', 'opt_1', 1)

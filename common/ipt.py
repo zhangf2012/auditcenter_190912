@@ -155,20 +155,53 @@ class Ipt:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/herbOrderList' + '?id=' + str(engineid)
         return self.request.get(url)
 
+    # def mergeEngineMsgList(self, engineid, type, gno):
+    #     """获取医嘱详情右侧的审核记录、警示信息等信息"""
+    #     ol = self.orderList(engineid, type)
+    #     hl = self.herbOrderList(engineid, type)
+    #     medicalIds = []
+    #     medicalHisIds = []
+    #     herbMedicalIds = []
+    #     herbMedicalHisIds = []
+    #     if ol['data']:
+    #         medicalIds = [i['id'] for i in ol['data'][gno]]
+    #         medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
+    #     if hl['data']:
+    #         herbMedicalIds = [i['drugId'] for i in hl['data'][0]['itemList']]
+    #         herbMedicalHisIds = [i['herbMedicalId'] for i in hl['data'][0]['itemList']]
+    #     if type == 0:
+    #         url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/mergeEngineMsgList'
+    #         param = {
+    #             "auditWay": 2,
+    #             "engineId": engineid,
+    #             "zoneId": self.zoneid,
+    #             "groupNo": gno,
+    #             "medicalIds": medicalIds,
+    #             "medicalHisIds": medicalHisIds,
+    #             "herbMedicalIds": herbMedicalIds,
+    #             "herbMedicalHisIds": herbMedicalHisIds
+    #         }
+    #     else:
+    #         url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/mergeEngineMsgList'
+    #         param = {
+    #             "engineId": engineid,
+    #             "zoneId": self.zoneid,
+    #             "groupNo": gno,
+    #             "medicalIds": medicalIds,
+    #             "medicalHisIds": medicalHisIds,
+    #             "herbMedicalIds": herbMedicalIds,
+    #             "herbMedicalHisIds": herbMedicalHisIds
+    #         }
+    #     return self.request.post_json(url, param)
     def mergeEngineMsgList(self, engineid, type, gno):
         """获取医嘱详情右侧的审核记录、警示信息等信息"""
         ol = self.orderList(engineid, type)
-        hl = self.herbOrderList(engineid, type)
+        # hl = self.herbOrderList(engineid, type)
         medicalIds = []
         medicalHisIds = []
-        herbMedicalIds = []
-        herbMedicalHisIds = []
         if ol['data']:
             medicalIds = [i['id'] for i in ol['data'][gno]]
             medicalHisIds = [i['orderId'] for i in ol['data'][gno]]
-        if hl['data']:
-            herbMedicalIds = [i['drugId'] for i in hl['data'][0]['itemList']]
-            herbMedicalHisIds = [i['herbMedicalId'] for i in hl['data'][0]['itemList']]
         if type == 0:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/mergeEngineMsgList'
             param = {
@@ -178,8 +211,8 @@ class Ipt:
                 "groupNo": gno,
                 "medicalIds": medicalIds,
                 "medicalHisIds": medicalHisIds,
-                "herbMedicalIds": herbMedicalIds,
-                "herbMedicalHisIds": herbMedicalHisIds
+                "herbMedicalIds": [],
+                "herbMedicalHisIds": []
             }
         else:
             url = self.conf.get('auditcenter', 'address') + '/api/v1/ipt/all/mergeEngineMsgList'
@@ -189,8 +222,8 @@ class Ipt:
                 "groupNo": gno,
                 "medicalIds": medicalIds,
                 "medicalHisIds": medicalHisIds,
-                "herbMedicalIds": herbMedicalIds,
-                "herbMedicalHisIds": herbMedicalHisIds
+                "herbMedicalIds": [],
+                "herbMedicalHisIds": []
             }
         return self.request.post_json(url, param)
 

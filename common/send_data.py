@@ -48,8 +48,8 @@ class SendData:
                             "{{d1}}": str(self.tool.get_date(-1, 0)),  # 同d（昨天时间）
                             "{{d4}}": str(self.tool.get_date(-2, 0)), # 同f2（前天时间）
                             "{{bno}}": "6666",  # 床号
-                            "{{docId}}": str(self.tool.get_date(-2, 0)),  # 医生工号
-                            "{{docName}}": str(self.tool.get_date(-2, 0)),  # 医生姓名
+                            "{{docId}}": 'doc',  # 医生工号
+                            "{{docName}}": 'dname',  # 医生姓名
                             }
     @wait
     def send(self, dir_name, xml_name, type):
@@ -63,9 +63,11 @@ class SendData:
         xml_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', dir_name, xml_name)
         url = ''
         if type == 1:
-            url = self.conf.get('auditcenter', 'address') + '/api/v1/auditcenter'
+            # url = self.conf.get('auditcenter', 'address') + '/api/v1/auditcenter'
+            url = 'http://10.1.1.120:2002/face?charset=UTF-8&serviceCode=SF_V4_AUDIT_CENTER&post_type=1'
         elif type == 2:
-            url = self.conf.get('auditcenter', 'address') + "/api/v1/cancelgroupdrug"
+            # url = self.conf.get('auditcenter', 'address') + "/api/v1/cancelgroupdrug"
+            url = 'http://10.1.1.120:2002/face?charset=UTF-8&serviceCode=CANCEL_GROUP_DRUG_V4&post_type=1'
         elif type == 3:
             url = self.conf.get('auditcenter', 'address') + "/api/v1/doublesign"
         else:

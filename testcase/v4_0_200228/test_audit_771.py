@@ -63,6 +63,15 @@ class TestIptModify:
         res = zy.orderList(engineid, 1)
         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
 
+    # @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_42', 'audit771_43', 'audit771_38')])
+    # def test_ipt_modify_2(self, zy, xml1, xml2, xml3):
+    #     """order_status=0,却修改了医嘱（实际这种情况是不允许的，此请情况只存在于需要兼容3.5数据但是接口不知道怎么区分修改，给了新增状态到审方）"""
+    #     zy.send.send('ipt', xml1, 1)
+    #     engineid1 = zy.get_engineid(1)
+    #     zy.audit_multi(*[engineid1])
+    #     zy.send.send('ipt', xml2, 1)  # 修改会重新产生任务
+    #     res2 = zy.mergeEngineMsgList(engineid1, 1)
+
 
 class TestIptDelCancel:
     @pytest.mark.parametrize("xml1", [('audit771_20'), ('audit771_21')])
@@ -70,7 +79,7 @@ class TestIptDelCancel:
         """传入删除/撤消医嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_19', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
-        zy.send.send('ipt', xml1, 1)
+        zy.send.send('ipt', xml1, 2)
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_27', 1)
         engineid = zy.get_engineid(1)
@@ -82,7 +91,7 @@ class TestIptDelCancel:
         zy.send.send('ipt', 'audit771_19', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
-        zy.send.send('ipt', xml1, 1)
+        zy.send.send('ipt', xml1, 2)
         res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
         actual = res['data']['groupAudits'][0]['rejectStatus']  # 断言已审页面医生操作记录为撤销
         assert actual == 0
@@ -92,7 +101,7 @@ class TestIptDelCancel:
         """传入删除/撤消草药嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_24', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
-        zy.send.send('ipt', xml1, 1)
+        zy.send.send('ipt', xml1, 2)
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_28', 1)
         engineid = zy.get_engineid(1)
@@ -104,7 +113,7 @@ class TestIptDelCancel:
         zy.send.send('ipt', 'audit771_24', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
-        zy.send.send('ipt', xml1, 1)
+        zy.send.send('ipt', xml1, 2)
         res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{cgp}}'])
         actual = res['data']['groupAudits'][0]['rejectStatus']  # 断言已审页面医生操作记录为撤销
         assert actual == 0
@@ -120,7 +129,7 @@ class TestIptStop:
         assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
             zy.send.change_data['{{tsb1}}'])
         assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}']) # 待审页面断言当前任务，以下的断言暂有问题
+            zy.send.change_data['{{tsb1}}'])  # 待审页面断言当前任务，以下的断言暂有问题
 
         # zy.audit_multi(engineid1)
         # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
@@ -133,7 +142,6 @@ class TestIptStop:
         #     zy.send.change_data['{{tsb1}}'])
         # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
         #     zy.send.change_data['{{tsb1}}'])   # 待审页面根据组号断言合并任务
-
 
     def test_ipt_stop_02(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -156,10 +164,10 @@ class TestIptStop:
         zy.send.send('ipt', 'audit771_16', 1)
         engineid2 = zy.get_engineid(1)
         # 以下两行代码断言为合并任务取最新的失效时间
-        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}'])
-        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}'])
+        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tsb1}}'])
+        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tsb1}}'])
 
     def test_ipt_stop_04(self, zy):
         """开具停止医嘱时原医嘱已审核"""
@@ -357,7 +365,6 @@ class TestOptNew:
 #         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
 
 
-
 class TestOptDel:
     def test_wait(self, mz):
         mz.send.send('opt', 'audit771_29', 1)
@@ -368,8 +375,8 @@ class TestOptDel:
         engineid = mz.get_engineid(2)
         # assert 'r1' in  mz.get_recipeInfo(engineid, 0)['data']['optRecipe'][1]  # 有合并处方
         check = 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']
-        # assert 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']  # 无合并出处方
-        assert check
+        assert 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']  # 无合并出处方
+        # assert check
 
 
 class TestOptReturnDrug:
