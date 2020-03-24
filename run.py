@@ -4,6 +4,5 @@
 import pytest
 
 
-
 if __name__ == '__main__':
     pytest.main(['-vs','--clean-alluredir','--alluredir=allure-results','testcase/v4_0_200228/test_audit_512.py'])
