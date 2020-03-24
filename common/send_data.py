@@ -63,8 +63,8 @@ class SendData:
         xml_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', dir_name, xml_name)
         url = ''
         if type == 1:
-            # url = self.conf.get('auditcenter', 'address') + '/api/v1/auditcenter'
-            url = 'http://10.1.1.120:2002/face?charset=UTF-8&serviceCode=SF_V4_AUDIT_CENTER&post_type=1'
+            url = self.conf.get('auditcenter', 'address') + '/api/v1/auditcenter'
+            # url = 'http://10.1.1.120:2002/face?charset=UTF-8&serviceCode=SF_V4_AUDIT_CENTER&post_type=1'
         elif type == 2:
             # url = self.conf.get('auditcenter', 'address') + "/api/v1/cancelgroupdrug"
             url = 'http://10.1.1.120:2002/face?charset=UTF-8&serviceCode=CANCEL_GROUP_DRUG_V4&post_type=1'
