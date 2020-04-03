@@ -4,12 +4,14 @@
 import pytest
 import allure
 
+
 @allure.feature('住院审核记录展示')
 class TestAuditIpt:
     """住院单一审核测试用例"""
-    @allure.story('住院待审页面当前任务')
+
+    @allure.story('住院待审页面当前任务-无审核记录')
     def test_wait_ipt(self, zy):
-        """待审页面当前任务"""
+        """待审页面当前任务-无审核记录"""
         zy.send.send('mainscene', 'ipt_1', 1)
         engineid = zy.get_engineid(1)
         res = zy.mergeEngineMsgList(engineid, 0, zy.send.change_data['{{gp}}'])
@@ -17,9 +19,10 @@ class TestAuditIpt:
         expected = None
         assert actual == expected
 
-    @pytest.mark.parametrize("audit_type,expected", [(None, None), (0, 0), (1, 0), (2, 1)])
+    @pytest.mark.parametrize("audit_type,expected", [(None, None), (0, 0), (1, 0), (2, 1)],
+                             ids=["未审核", "审核打回(必须修改)", "审核打回(可双签)", "审核通过"])
     def test_wait_ipt_merge(self, zy, audit_type, expected):
-        """待审页面合并任务"""
+        """验证针对不同的审核方式待审页面合并任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
         engineid1 = zy.get_engineid(1)
         actual = None
@@ -38,7 +41,7 @@ class TestAuditIpt:
 
     @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
     def test_already_ipt(self, zy, audit_type, expected):
-        """已审页面当前任务"""
+        """验证针对不同的审核方式已审页面当前任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
         engineid = zy.get_engineid(1)
         zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, audit_type)
@@ -48,7 +51,7 @@ class TestAuditIpt:
 
     @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
     def test_already_ipt_merge(self, zy, audit_type, expected):
-        """已审页面合并任务"""
+        """验证针对不同的审核方式已审页面合并任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
         engineid1 = zy.get_engineid(1)
         zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid1, audit_type)
@@ -59,9 +62,11 @@ class TestAuditIpt:
         actual = res['data']['groupAudits'][0]['auditStatus']
         assert actual == expected
 
+
 @allure.feature('门诊审核记录展示')
 class TestAuditOpt:
     """门诊单一审核测试用例"""
+
     @allure.story('门诊当前任务')
     def test_wait_opt(self, mz):
         """待审当前任务"""
@@ -71,7 +76,6 @@ class TestAuditOpt:
         actual = res['data']
         expected = []
         assert actual == expected
-
 
     @pytest.mark.parametrize("audit_type,expected", [(None, []), (0, 0), (1, 0), (2, 1)])
     def test_opt_wait_merge(self, mz, audit_type, expected):
