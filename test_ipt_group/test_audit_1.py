@@ -5,7 +5,7 @@ import pytest
 import allure
 
 
-@allure.feature('住院审核记录展示')
+@allure.feature('验证医嘱明细页面审核医嘱药师审核记录展示正确')
 class TestAuditIpt:
     """住院单一审核测试用例"""
 
@@ -63,7 +63,7 @@ class TestAuditIpt:
         assert actual == expected
 
 
-@allure.feature('门诊审核记录展示')
+@allure.feature('验证处方明细页面审核处方药师审核记录展示正确')
 class TestAuditOpt:
     """门诊单一审核测试用例"""
 
