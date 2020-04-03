@@ -50,3 +50,9 @@ class HttpRequest:
 
         else:
             return self.s.put(url=url, data=data, headers=headers)
+
+    def http_post(self, url, json=None):
+        return self.s.post(url, json=json)  # 这种封装方式只适合入参为json格式的请求，不适用于表单请求
+
+    def http_get(self, url, params=None):
+        return self.s.get(url, params=params)

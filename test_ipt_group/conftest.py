@@ -5,7 +5,7 @@ import pytest
 from common.alter_config import AlterConfig
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session",autouse=True)
 def ipt_group():
     """修改配置项-住院医嘱审查模式 为按组号"""
     ac = AlterConfig()
