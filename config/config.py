@@ -3,7 +3,10 @@
 # @Author : wangmengmeng
 import os
 
-
+host='10.1.1.120'
+port=22
+username='yyuser'
+password='iPh@Yyuse2'
 
 auditcennter_url = "http://10.1.1.120:9999/auditcenter"
 PROJ_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
