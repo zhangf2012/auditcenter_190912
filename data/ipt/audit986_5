@@ -1,0 +1,17 @@
+<root>
+  <base>
+    <hospital_code><![CDATA[H0003]]></hospital_code>
+    <event_no><![CDATA[eno_{{zyhzh}}]]></event_no>
+    <patient_id><![CDATA[pid_{{zyhzh}}]]></patient_id>
+    <source><![CDATA[住院]]></source>
+  </base>
+  <orders>
+    <medical_order_item>
+      <order_id><![CDATA[o2_{{zyhzh}}]]></order_id>
+      <group_no><![CDATA[2_{{zyhzh}}]]></group_no>
+      <order_doc_id><![CDATA[09]]></order_doc_id>
+	  <order_doc_name><![CDATA[医生王]]></order_doc_name>
+      <order_status><![CDATA[2]]></order_status>
+    </medical_order_item>
+  </orders>
+</root>
