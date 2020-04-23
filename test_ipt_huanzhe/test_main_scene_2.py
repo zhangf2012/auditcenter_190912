@@ -9,7 +9,7 @@ class TestIptNew:
     """新开医嘱"""
 
     def test_wait_med_01(self, zy):
-        """"""
+        """长期医嘱失效时间为空"""
         zy.send.send('ipt', 'audit771_22', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
@@ -26,21 +26,14 @@ class TestIptNew:
     def test_wait_med_04(self, zy):
         """失效时间小于当前时间"""
         zy.send.send('mainscene', 'new_3', 1)
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_wait_med_05(self, zy):
         """1.开具医嘱1，并审核通过；
-           2.开具医嘱2（包含医嘱1）产生任务二"""
+           2.开具医嘱2（包含医嘱1）产生任务二--fail"""
         zy.send.send('mainscene', 'ipt_new_4', 1)
         zy.send.send('mainscene', 'ipt_new_5', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
-
-    def test_wait_med_06(self, zy):
-        """"""
-        zy.send.send('mainscene', 'ipt_new_4', 1)
-        zy.send.send('mainscene', 'ipt_new_4', 1)
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
-
 
     def test_wait_herbmed(self, zy):
         zy.send.send('ipt', 'audit771_23', 1)
@@ -101,6 +94,11 @@ class TestIptModify:
     #     zy.audit_multi(*[engineid1])
     #     zy.send.send('ipt', xml2, 1)  # 修改会重新产生任务
     #     res2 = zy.mergeEngineMsgList(engineid1, 1)
+    def test_ipt_modify_2(self, zy):
+        zy.send.send('mainscene', 'ipt_modify_1', 1)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)
+        zy.send.send('mainscene', 'ipt_modify_2', 1)
 
 
 class TestIptDelCancel:
