@@ -6,7 +6,7 @@
     <source><![CDATA[住院]]></source>
   </base>
   <orders>
-  <medical_order_item>
+   <medical_order_item>
       <order_id><![CDATA[o1_{{ts}}]]></order_id>
       <order_time><![CDATA[{{d2}}]]></order_time>
       <order_dept_id><![CDATA[011]]></order_dept_id>

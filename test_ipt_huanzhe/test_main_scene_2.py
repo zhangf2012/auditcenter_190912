@@ -102,7 +102,7 @@ class TestIptModify:
 
 
 class TestIptDelCancel:
-    @pytest.mark.parametrize("xml1", [('audit771_20'), ('audit771_21')])
+    @pytest.mark.parametrize("xml1", [('audit771_20')])  # , ('audit771_21')
     def test_wait_med(self, zy, xml1):
         """传入删除/撤消医嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_19', 1)
@@ -113,7 +113,7 @@ class TestIptDelCancel:
         engineid = zy.get_engineid(1)
         assert not zy.orderList(engineid, 0)['data']
 
-    @pytest.mark.parametrize("xml1", [('audit771_20'), ('audit771_21')])
+    @pytest.mark.parametrize("xml1", [('audit771_20')])  # , ('audit771_21')
     def test_already_med(self, zy, xml1):
         """传入删除/撤消药嘱时，原任务已审"""
         zy.send.send('ipt', 'audit771_19', 1)
@@ -124,12 +124,41 @@ class TestIptDelCancel:
         actual = res['data']['groupAudits'][0]['rejectStatus']  # 断言已审页面医生操作记录为撤销
         assert actual == 0
 
+    def test_01(self, zy):
+        zy.send.send('ipt', 'audit986_1', 1)
+        zy.send.send('ipt', 'audit986_2', 1)
+        engineid = zy.get_engineid(1)
+        assert zy.selNotAuditIptList()
+        zy.send.send('ipt', 'audit986_3', 1)
+        assert not zy.selNotAuditIptList()['data']['taskNumList']
+
+    def test_02(self, zy):
+        zy.send.send('ipt', 'audit986_1', 1)
+        # zy.send.send('ipt', 'audit986_2', 2)
+        engineid1 = zy.get_engineid(1)
+        zy.audit_multi(engineid1)
+        assert not zy.selNotAuditIptList()['data']['taskNumList']
+        zy.send.send('ipt', 'audit986_4', 1)
+        zy.send.send('ipt', 'audit986_5', 1)
+        assert not zy.selNotAuditIptList()['data']['taskNumList']
+
+    def test_04(self, zy):
+        zy.send.send('ipt', 'audit986_1', 1)
+        # zy.send.send('ipt', 'audit986_2', 2)
+        engineid1 = zy.get_engineid(1)
+        zy.audit_multi(engineid1)
+        assert not zy.selNotAuditIptList()['data']['taskNumList']
+        zy.send.send('ipt', 'audit986_6', 1)
+        zy.send.send('ipt', 'audit986_5', 2)
+        assert zy.selNotAuditIptList()['data']['taskNumList']
+
     @pytest.mark.parametrize("xml1", [('audit771_25'), ('audit771_26')])
     def test_wait_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_24', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
-        zy.send.send('ipt', xml1, 2)
+        zy.send.send('ipt', xml1, 1)
+        # zy.send.send('ipt', xml1, 2) 使用统一接口传2
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_28', 1)
         engineid = zy.get_engineid(1)
@@ -154,17 +183,17 @@ class TestIptStop:
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于等于当前时间，旧任务不撤销会重新取新的失效时间
         engineid1 = zy.get_engineid(1)
-        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}'])
-        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}'])  # 待审页面断言当前任务，以下的断言暂有问题
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tsb1}}'])
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tsb1}}'])  # 待审页面断言当前任务，以下的断言暂有问题
 
-        # zy.audit_multi(engineid1)
+        zy.audit_multi(engineid1)
         # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
         #     zy.send.change_data['{{tsb1}}'])
         # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
         #     zy.send.change_data['{{tsb1}}']) # 已审页面断言当前任务
-        # zy.send.send('ipt', 'audit771_16', 1)
+        zy.send.send('ipt', 'audit771_16', 1)
         # engineid2 = zy.get_engineid(1)
         # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
         #     zy.send.change_data['{{tsb1}}'])
@@ -190,12 +219,12 @@ class TestIptStop:
         zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 0)
         zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于等于当前时间
         zy.send.send('ipt', 'audit771_16', 1)
-        engineid2 = zy.get_engineid(1)
+        engineid2 = zy.get_engineid(2)
         # 以下两行代码断言为合并任务取最新的失效时间
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
 
     def test_ipt_stop_04(self, zy):
         """开具停止医嘱时原医嘱已审核"""

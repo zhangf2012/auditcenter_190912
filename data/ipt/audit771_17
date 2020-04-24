@@ -15,7 +15,7 @@
       <order_doc_id><![CDATA[09]]></order_doc_id>
       <order_doc_name><![CDATA[王瑞]]></order_doc_name>
       <order_doc_title><![CDATA[231]]></order_doc_title>
-      <order_status><![CDATA[4]]></order_status>
+      <order_status><![CDATA[0]]></order_status>
       <order_type><![CDATA[1]]></order_type>
       <drug_purpose><![CDATA[药嘱目的]]></drug_purpose>
       <group_no><![CDATA[{{gp}}]]></group_no>
@@ -65,7 +65,7 @@
       <order_doc_id><![CDATA[09]]></order_doc_id>
       <order_doc_name><![CDATA[王瑞]]></order_doc_name>
       <order_doc_title><![CDATA[231]]></order_doc_title>
-      <order_status><![CDATA[4]]></order_status>
+      <order_status><![CDATA[0]]></order_status>
       <order_type><![CDATA[1]]></order_type>
       <drug_purpose><![CDATA[药嘱目的]]></drug_purpose>
       <group_no><![CDATA[{{gp}}]]></group_no>

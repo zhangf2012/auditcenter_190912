@@ -48,8 +48,8 @@ class SendData:
                             "{{d1}}": str(self.tool.get_date(-1, 0)),  # 同d（昨天时间）
                             "{{d4}}": str(self.tool.get_date(-2, 0)), # 同f2（前天时间）
                             "{{bno}}": "6666",  # 床号
-                            "{{docId}}": 'doc',  # 医生工号
-                            "{{docName}}": 'dname',  # 医生姓名
+                            "{{docId}}": 'wangdoc',  # 医生工号
+                            "{{docName}}": '王医生',  # 医生姓名
                             }
     @wait
     def send(self, dir_name, xml_name, type):

@@ -192,12 +192,12 @@ class TestIptStop:
         zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 0)
         zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于等于当前时间
         zy.send.send('ipt', 'audit771_16', 1)
-        engineid2 = zy.get_engineid(1)
+        engineid2 = zy.get_engineid(2)
         # 以下两行代码断言为合并任务取最新的失效时间
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
 
     def test_ipt_stop_04(self, zy):
         """开具停止医嘱时原医嘱已审核"""
