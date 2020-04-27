@@ -45,7 +45,7 @@ class TestIptModify:
 
     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
     def test_ipt_modify_0(self, zy, xml1, xml2, xml3):
-        """修改-药嘱-未审核 测试用例"""
+        """修改-药嘱-未审核 测试用例--fail"""
         zy.send.send('ipt', xml1, 1)
         zy.send.send('ipt', xml2, 1)
         engineid1 = zy.get_engineid(1)
@@ -152,7 +152,7 @@ class TestIptDelCancel:
         zy.send.send('ipt', 'audit986_5', 2)
         assert zy.selNotAuditIptList()['data']['taskNumList']
 
-    @pytest.mark.parametrize("xml1", [('audit771_25'), ('audit771_26')])
+    @pytest.mark.parametrize("xml1", [('audit771_25')]) #, ('audit771_26')
     def test_wait_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_24', 1)
@@ -164,7 +164,7 @@ class TestIptDelCancel:
         engineid = zy.get_engineid(1)
         assert not zy.herbOrderList(engineid, 0)['data']
 
-    @pytest.mark.parametrize("xml1", [('audit771_25'), ('audit771_26')])
+    @pytest.mark.parametrize("xml1", [('audit771_25')]) # , ('audit771_26')
     def test_already_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务已审"""
         zy.send.send('ipt', 'audit771_24', 1)

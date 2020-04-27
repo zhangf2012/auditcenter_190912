@@ -193,6 +193,7 @@ class Ipt:
     #             "herbMedicalHisIds": herbMedicalHisIds
     #         }
     #     return self.request.post_json(url, param)
+    @wait
     def mergeEngineMsgList(self, engineid, type, gno):
         """获取医嘱详情右侧的审核记录、警示信息等信息"""
         ol = self.orderList(engineid, type)
