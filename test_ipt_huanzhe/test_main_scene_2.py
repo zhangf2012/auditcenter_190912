@@ -392,7 +392,7 @@ class TestIptReturnDrug:
                 break
         assert actual4 == 7
 
-
+@pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 class TestOptNew:
     """新开处方"""
 
@@ -421,7 +421,7 @@ class TestOptNew:
 #         res = zy.orderList(engineid, 1)
 #         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
 
-
+@pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 class TestOptDel:
     def test_wait(self, mz):
         mz.send.send('opt', 'audit771_29', 1)
@@ -435,7 +435,7 @@ class TestOptDel:
         assert 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']  # 无合并出处方
         # assert check
 
-
+@pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 class TestOptReturnDrug:
     @pytest.mark.parametrize("xml1,xml2,xml3,expected", [('audit771_32', 'audit771_33', 'audit771_34', 7)])
     def test_opt_return_drug_0(self, mz, xml1, xml2, xml3, expected):
