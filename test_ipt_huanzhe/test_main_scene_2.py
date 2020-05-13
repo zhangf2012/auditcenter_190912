@@ -35,6 +35,13 @@ class TestIptNew:
         zy.send.send('mainscene', 'ipt_new_5', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
+    def test_wait_med_06(self, zy):
+        """1.开具医嘱1+2，并审核通过；
+           2.开具医嘱1（修改1）+2"""
+        zy.send.send('mainscene', 'ipt_new_5', 1)
+        zy.send.send('mainscene', 'ipt_new_6', 1)
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
+
     def test_wait_herbmed(self, zy):
         zy.send.send('ipt', 'audit771_23', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
@@ -152,7 +159,14 @@ class TestIptDelCancel:
         zy.send.send('ipt', 'audit986_5', 2)
         assert zy.selNotAuditIptList()['data']['taskNumList']
 
-    @pytest.mark.parametrize("xml1", [('audit771_25')]) #, ('audit771_26')
+    def test_05(self,zy):
+        zy.send.send('ipt', 'audit771_19', 1)
+        zy.send.send('ipt', 'audit771_20', 1)
+        zy.send.send('ipt', 'audit771_47', 1)
+        pass
+
+
+    @pytest.mark.parametrize("xml1", [('audit771_25')])  # , ('audit771_26')
     def test_wait_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_24', 1)
@@ -164,7 +178,7 @@ class TestIptDelCancel:
         engineid = zy.get_engineid(1)
         assert not zy.herbOrderList(engineid, 0)['data']
 
-    @pytest.mark.parametrize("xml1", [('audit771_25')]) # , ('audit771_26')
+    @pytest.mark.parametrize("xml1", [('audit771_25')])  # , ('audit771_26')
     def test_already_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务已审"""
         zy.send.send('ipt', 'audit771_24', 1)
@@ -236,6 +250,10 @@ class TestIptStop:
         engineid2 = zy.get_engineid(1)
         # 该行代码断言为没有合并任务
         assert not zy.orderList(engineid2, 0)['data']
+
+class TestIptStop_new:
+    pass
+
 
 
 class TestIptReturnDrug:
@@ -392,6 +410,52 @@ class TestIptReturnDrug:
                 break
         assert actual4 == 7
 
+
+class TestMerge:
+
+    def test_01(self, zy):
+        """药师审核打回后医生修改"""
+        zy.send.send('ipt', 'audit771_36', 1)
+        zy.send.send('ipt', 'audit771_37', 1)
+        zy.send.send('ipt', 'audit771_38', 1)
+        # engineid1 = zy.get_engineid(1)
+
+    def test_02(self, zy):
+        """药师审核打回后医生删除"""
+        zy.send.send('ipt', 'audit771_19', 1)
+        zy.send.send('ipt', 'audit771_20', 1)
+        zy.send.send('ipt', 'audit771_27', 1)
+        # engineid1 = zy.get_engineid(1)
+
+    def test_03(self, zy):
+        """药师审核打回后医生双签"""
+        zy.send.send('ipt', 'audit771_36', 1)
+        # engineid1 = zy.get_engineid(1)
+        zy.send.send('mainscene', 'ipt_doublesign', 3)
+        zy.send.send('ipt', 'audit771_38', 1)
+
+    def test_04(self, zy):
+        """药师审核打回后医生退药"""
+        zy.send.send('ipt', 'audit771_1', 1)
+        zy.send.send('ipt', 'audit771_2', 1)
+        zy.send.send('ipt', 'audit771_3', 1)
+        # engineid1 = zy.get_engineid(1)
+
+    def test_05(self, zy):
+        """药师审核打回后医生停药"""
+        zy.send.send('ipt', 'audit771_15', 1)
+        zy.send.send('ipt', 'audit771_17', 1)
+        zy.send.send('ipt', 'audit771_16', 1)
+        # engineid1 = zy.get_engineid(1)
+
+    def test_08(self, zy):
+        """药师审核打回后药师重审通过"""
+        zy.send.send('ipt', 'audit771_36', 1)
+        # zy.send.send('ipt', xml2, 1)
+        zy.send.send('ipt', 'audit771_38', 1)
+        # engineid1 = zy.get_engineid(1)
+
+
 @pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 class TestOptNew:
     """新开处方"""
@@ -434,6 +498,7 @@ class TestOptDel:
         check = 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']
         assert 'r1' not in mz.get_recipeInfo(engineid, 0)['data']['optRecipe']  # 无合并出处方
         # assert check
+
 
 @pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 class TestOptReturnDrug:
