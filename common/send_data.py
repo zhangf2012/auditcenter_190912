@@ -28,8 +28,11 @@ class SendData:
                             "{{tb1}}": str(self.tool.get_ts(-1, +1)),
                             "{{db1}}": str(self.tool.get_date(-1, +1)),
                             "{{db180}}": str(self.tool.get_date(0, 3)),  # 今天当前时间+180分钟
+                            "{{tb180}}": str(self.tool.get_ts(0, 3)),  # 今天当前时间戳+180分钟
                             "{{db60}}": str(self.tool.get_date(0, 1)),  # 今天当前时间+60分钟
-                            "{{df60}}": str(self.tool.get_date(0, -1)),  # 今天当前时间+-60分钟
+                            "{{tb60}}": str(self.tool.get_ts(0, 1)),  # 今天当前时间戳+60分钟
+                            "{{df60}}": str(self.tool.get_date(0, -1)),  # 今天当前时间-60分钟
+                            "{{tf60}}": str(self.tool.get_ts(0, -1)),  # 今天当前时间戳-60分钟
                             "{{tsb1}}": str(self.tool.get_ts(+1, 0)),  # 明天时间戳
                             "{{dtb1}}": str(self.tool.get_date(+1, 0)),  # 明天时间
                             "{{gp}}": str(self.tool.get_random(1, 10000)),

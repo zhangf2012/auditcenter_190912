@@ -212,52 +212,107 @@ class TestIptStop:
 
 class TestIptStop_new:
     def test_ipt_stop_01(self, zy):
-        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，旧任务不撤销会重新取新的失效时间
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_02(self, zy):
-        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，旧任务不撤销会重新取新的失效时间
+        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_03(self, zy):
-        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，旧任务不撤销会重新取新的失效时间
+        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_04(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，旧任务不撤销会重新取新的失效时间
+        engineid = zy.get_engineid(1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
+        assert (zy.orderList(engineid, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.audit_multi(engineid)
+        assert (zy.orderList(engineid, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.audit_multi(engineid)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+
+
 
     def test_ipt_stop_05(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
-        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，旧任务不撤销会重新取新的失效时间
+        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，旧任务撤销
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert not zy.orderList(engineid1, 0)['data']
 
     def test_ipt_stop_06(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
-        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，旧任务不撤销会重新取新的失效时间
+        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，旧任务撤销
         zy.send.send('ipt', 'audit771_16', 1)
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_07(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
-        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，旧任务不撤销会重新取新的失效时间
-        zy.send.send('ipt', 'audit771_16', 1)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，会产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.audit_multi(engineid1)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
 
     def test_ipt_stop_08(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
-        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，旧任务不撤销会重新取新的失效时间
-        zy.send.send('ipt', 'audit771_16', 1)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生待审任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        pass
+        # engineid1 = zy.get_engineid(1)
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb60}}'])
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb60}}'])
+        # zy.audit_multi(engineid1)
+        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb60}}'])
+        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb60}}'])
+
+
 
     def test_ipt_stop_09(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
-        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，旧任务不撤销会重新取新的失效时间
-        zy.send.send('ipt', 'audit771_16', 1)
+        zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，修改医嘱不产生待审任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert not zy.orderList(engineid1, 0)['data']
 
 
 class TestIptReturnDrug:
