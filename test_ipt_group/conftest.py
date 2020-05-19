@@ -11,6 +11,7 @@ def ipt_group():
     """修改配置项-住院医嘱审查模式 为按组号"""
     ac = AlterConfig()
     ac.alter_sys_config(40003, 1)
+    ac.alter_sys_config(40106, 120)
 
 
 @pytest.fixture(scope='function')
