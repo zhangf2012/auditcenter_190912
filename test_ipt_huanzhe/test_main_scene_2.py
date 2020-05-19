@@ -39,8 +39,12 @@ class TestIptNew:
         """1.开具医嘱1+2，并审核通过；
            2.开具医嘱1（修改1）+2"""
         zy.send.send('mainscene', 'ipt_new_5', 1)
+        engineid1 = zy.get_engineid(1)
+        zy.audit_multi(engineid1)
         zy.send.send('mainscene', 'ipt_new_6', 1)
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        engineid2 = zy.get_engineid(1)
+        assert zy.orderList(engineid2, 0)['data'][zy.send.change_data["{{cgp}}"]][0]['auditMarkStatus'] is None
+        assert zy.orderList(engineid2,0)['data'][zy.send.change_data["{{gp}}"]][0]['auditMarkStatus'] == 1
 
     def test_wait_herbmed(self, zy):
         zy.send.send('ipt', 'audit771_23', 1)
