@@ -56,7 +56,7 @@ class TestIptModify:
 
     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
     def test_ipt_modify_0(self, zy, xml1, xml2, xml3):
-        """修改-药嘱-未审核 测试用例--fail"""
+        """修改-药嘱-未审核 测试用例"""
         zy.send.send('ipt', xml1, 1)
         zy.send.send('ipt', xml2, 1)
         engineid1 = zy.get_engineid(1)
