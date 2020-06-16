@@ -160,17 +160,17 @@ class TestIptStop:
         assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tsb1}}'])  # 待审页面断言当前任务，以下的断言暂有问题
 
-        # zy.audit_multi(engineid1)
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}']) # 已审页面断言当前任务
-        # zy.send.send('ipt', 'audit771_16', 1)
-        # engineid2 = zy.get_engineid(1)
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])
-        # assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tsb1}}'])   # 待审页面根据组号断言合并任务
+        zy.audit_multi(engineid1)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])  # 已审页面断言当前任务
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid2 = zy.get_engineid(1)
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])
+        assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tsb1}}'])  # 待审页面根据组号断言合并任务
 
     def test_ipt_stop_02(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -229,12 +229,12 @@ class TestIptStop_new:
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_021(self, zy):
-        zy.send.send('ipt', 'audit771_451', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，产生任务
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_451', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生任务
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_031(self, zy):
-        zy.send.send('ipt', 'audit771_461', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，产生任务
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_461', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_04(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -261,8 +261,6 @@ class TestIptStop_new:
             zy.send.change_data['{{tb180}}'])
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
-
-
 
     def test_ipt_stop_05(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -318,6 +316,48 @@ class TestIptStop_new:
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
 
+    def test_ipt_stop_072(self, zy):
+        """长期医嘱已审，再开停嘱不产生任务"""
+        zy.send.send('ipt', 'audit771_15', 1)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，不产生任务
+        zy.send.send('ipt', 'audit771_44', 1)
+        zy.send.send('ipt', 'audit771_44', 1)
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.audit_multi(engineid1)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+
+    def test_ipt_stop_073(self, zy):
+        """长期医嘱已审，再开停嘱不产生任务"""
+        zy.send.send('ipt', 'audit771_15', 1)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，不产生任务
+        zy.send.send('ipt', 'audit771_44', 1)
+        zy.send.send('ipt', 'audit771_15', 1)
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
+        engineid1 = zy.get_engineid(1)
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        zy.audit_multi(engineid1)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+
     def test_ipt_stop_08(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
@@ -339,8 +379,6 @@ class TestIptStop_new:
         # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
         #     zy.send.change_data['{{tb60}}'])
 
-
-
     def test_ipt_stop_09(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
@@ -353,6 +391,7 @@ class TestIptStop_new:
 
         # engineid1 = zy.get_engineid(1)
         # assert not zy.orderList(engineid1, 0)['data']
+
 
 class TestIptReturnDrug:
 
