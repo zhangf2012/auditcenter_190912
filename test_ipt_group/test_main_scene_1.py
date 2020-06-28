@@ -71,17 +71,48 @@ class TestIptModify:
     # @pytest.mark.skip(reason='just skip')
     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
     def test_ipt_modify_1(self, zy, xml1, xml2, xml3):
-        """退药-药嘱-审核 测试用例"""
+        """退药-药嘱-审核通过 测试用例"""
         zy.send.send('ipt', xml1, 1)
         engineid1 = zy.get_engineid(1)
         zy.audit_multi(*[engineid1])
         zy.send.send('ipt', xml2, 1)  # 修改会重新产生任务
         res2 = zy.orderList(engineid1, 1)
+        assert len(res2['data'][zy.send.change_data['{{gp}}']]) == 2
         assert '忌辛辣修改一下' not in [i['specialPrompt'] for i in res2['data'][zy.send.change_data['{{gp}}']]]
         engineid4 = zy.get_engineid(1)
         res4 = zy.orderList(engineid4, 0)
+        assert len(res2['data'][zy.send.change_data['{{gp}}']]) == 2
         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res4['data'][zy.send.change_data['{{gp}}']]]
         zy.audit_multi(*[engineid4])
+        assert len((zy.orderList(engineid4, 1))['data'][zy.send.change_data['{{gp}}']])
+        assert '忌辛辣修改一下' in [i['specialPrompt'] for i in
+                             (zy.orderList(engineid4, 1))['data'][zy.send.change_data['{{gp}}']]]
+        zy.send.send('ipt', xml3, 1)
+        engineid = zy.get_engineid(1)
+        res3 = zy.orderList(engineid, 0)
+        assert len(res3['data'][zy.send.change_data['{{gp}}']]) == 2
+        assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res3['data'][zy.send.change_data['{{gp}}']]]
+        zy.audit_multi(*[engineid])
+        res = zy.orderList(engineid, 1)
+        assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
+
+
+    @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
+    def test_ipt_modify_2(self, zy, xml1, xml2, xml3):
+        """退药-药嘱-审核打回 测试用例"""
+        zy.send.send('ipt', xml1, 1)
+        engineid1 = zy.get_engineid(1)
+        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid1, 1) # 审核打回
+        zy.send.send('ipt', xml2, 1)  # 修改会重新产生任务
+        res2 = zy.orderList(engineid1, 1)
+        assert len(res2['data'][zy.send.change_data['{{gp}}']]) == 2
+        assert '忌辛辣修改一下' not in [i['specialPrompt'] for i in res2['data'][zy.send.change_data['{{gp}}']]]
+        engineid4 = zy.get_engineid(1)
+        res4 = zy.orderList(engineid4, 0)
+        assert len(res2['data'][zy.send.change_data['{{gp}}']]) == 2
+        assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res4['data'][zy.send.change_data['{{gp}}']]]
+        zy.audit_multi(*[engineid4])
+        assert len((zy.orderList(engineid4, 1))['data'][zy.send.change_data['{{gp}}']])
         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in
                              (zy.orderList(engineid4, 1))['data'][zy.send.change_data['{{gp}}']]]
         zy.send.send('ipt', xml3, 1)
@@ -91,7 +122,6 @@ class TestIptModify:
         zy.audit_multi(*[engineid])
         res = zy.orderList(engineid, 1)
         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
-
     # @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_42', 'audit771_43', 'audit771_38')])
     # def test_ipt_modify_2(self, zy, xml1, xml2, xml3):
     #     """order_status=0,却修改了医嘱（实际这种情况是不允许的，此请情况只存在于需要兼容3.5数据但是接口不知道怎么区分修改，给了新增状态到审方）"""
@@ -214,6 +244,8 @@ class TestIptStop_new:
     def test_ipt_stop_01(self, zy):
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_44', 1)
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_ipt_stop_02(self, zy):
         zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生任务
@@ -222,6 +254,28 @@ class TestIptStop_new:
     def test_ipt_stop_03(self, zy):
         zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
+
+    def test_ipt_a4(self, zy):
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        engineid = zy.get_engineid(1)  # 审核(批量通过)后重复传，不产生任务，且审核记录无变化与上次一致
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_44', 1)
+        zy.send.send('ipt', 'audit771_44', 1)
+        res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
+        count = len(res['data']['groupAudits'])
+        assert count == 1
+
+    def test_ipt_a5(self, zy):
+        zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        engineid = zy.get_engineid(1)  # 审核打回后重复传，不产生任务，且审核记录无变化与上次一致
+        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 1)
+        zy.send.send('ipt', 'audit771_44', 1)
+        zy.send.send('ipt', 'audit771_44', 1)
+        res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
+        count = len(res['data']['groupAudits'])
+        assert count == 1
 
     # 临时医嘱没有走配置项，都会产生任务
     def test_ipt_stop_011(self, zy):
@@ -235,6 +289,28 @@ class TestIptStop_new:
     def test_ipt_stop_031(self, zy):
         zy.send.send('ipt', 'audit771_461', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
+
+    def test_ipt_b4(self, zy):
+        zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        engineid = zy.get_engineid(1)  # 审核后重复传，不产生任务，且审核记录无变化与上次一致
+        zy.audit_multi(engineid)
+        zy.send.send('ipt', 'audit771_441', 1)
+        zy.send.send('ipt', 'audit771_441', 1)
+        res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
+        count = len(res['data']['groupAudits'])
+        assert count == 1
+
+    def test_ipt_b5(self, zy):
+        zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
+        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        engineid = zy.get_engineid(1)  # 审核后重复传，不产生任务，且审核记录无变化与上次一致
+        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 1)
+        zy.send.send('ipt', 'audit771_441', 1)
+        zy.send.send('ipt', 'audit771_441', 1)
+        res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
+        count = len(res['data']['groupAudits'])
+        assert count == 1
 
     def test_ipt_stop_04(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -303,18 +379,19 @@ class TestIptStop_new:
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
         zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，不产生任务
+        zy.send.send('ipt', 'audit771_441', 1)
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_16', 1)
         engineid1 = zy.get_engineid(1)
-        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tb180}}'])
-        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tb180}}'])
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb180}}'])
+        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb180}}'])
         zy.audit_multi(engineid1)
-        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tb180}}'])
-        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tb180}}'])
+        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb180}}'])
+        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+        #     zy.send.change_data['{{tb180}}'])
 
     def test_ipt_stop_072(self, zy):
         """长期医嘱已审，再开停嘱不产生任务"""
@@ -391,6 +468,7 @@ class TestIptStop_new:
 
         # engineid1 = zy.get_engineid(1)
         # assert not zy.orderList(engineid1, 0)['data']
+
 
 
 class TestIptReturnDrug:

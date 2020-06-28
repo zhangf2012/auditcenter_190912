@@ -41,7 +41,7 @@
   <orders>
     <medical_order_item>
       <order_id><![CDATA[o1_{{tf1}}]]></order_id>
-      <order_time><![CDATA[{{f5}}]]></order_time>
+      <order_time><![CDATA[{{dt}}]]></order_time>
       <order_dept_id><![CDATA[011]]></order_dept_id>
       <order_dept_name><![CDATA[中心ICU]]></order_dept_name>
       <doc_group><![CDATA[神经内科-医生王组]]></doc_group>
@@ -74,7 +74,7 @@
       <check_time><![CDATA[{{df1}}]]></check_time>
       <check_nurse_id><![CDATA[017]]></check_nurse_id>
       <check_nurse_name><![CDATA[陆羽7]]></check_nurse_name>
-      <order_valid_time><![CDATA[{{f5}}]]></order_valid_time>
+      <order_valid_time><![CDATA[{{dt}}]]></order_valid_time>
       <order_invalid_time><![CDATA[]]></order_invalid_time>
       <special_prompt><![CDATA[忌辛辣]]></special_prompt>
       <skin_test_time><![CDATA[{{df1}}]]></skin_test_time>
@@ -91,7 +91,7 @@
     </medical_order_item>
         <medical_order_item>
       <order_id><![CDATA[o2_{{tf1}}]]></order_id>
-      <order_time><![CDATA[{{f5}}]]></order_time>
+      <order_time><![CDATA[{{dt}}]]></order_time>
       <order_dept_id><![CDATA[011]]></order_dept_id>
       <order_dept_name><![CDATA[中心ICU]]></order_dept_name>
       <doc_group><![CDATA[神经内科-医生王组]]></doc_group>
@@ -124,7 +124,7 @@
       <check_time><![CDATA[{{df1}}]]></check_time>
       <check_nurse_id><![CDATA[017]]></check_nurse_id>
       <check_nurse_name><![CDATA[陆羽7]]></check_nurse_name>
-      <order_valid_time><![CDATA[{{f5}}]]></order_valid_time>
+      <order_valid_time><![CDATA[{{dt}}]]></order_valid_time>
       <order_invalid_time><![CDATA[]]></order_invalid_time>
       <special_prompt><![CDATA[忌辛辣]]></special_prompt>
       <skin_test_time><![CDATA[{{df1}}]]></skin_test_time>

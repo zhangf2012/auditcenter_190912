@@ -1,0 +1,16 @@
+<root>
+	<base>
+    	<hospital_code><![CDATA[H0003]]></hospital_code>
+    	<patient_id><![CDATA[{{zyhzh}}]]></patient_id>
+    	<event_no><![CDATA[{{zyhzh}}]]></event_no>
+    	<source><![CDATA[住院]]></source>
+	</base>
+		<doc_id><![CDATA[{{docId}}]]></doc_id>
+		<doc_name><![CDATA[{{docName}}]]></doc_name>
+	<feed_back>
+		<group_no><![CDATA[{{gp}}]]></group_no>
+		<is_herb><![CDATA[0]]></is_herb>
+		<message><![CDATA[这是双签消息]]></message>
+	<status><![CDATA[1]]></status>
+	</feed_back>
+</root>
