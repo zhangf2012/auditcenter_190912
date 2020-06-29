@@ -4,7 +4,7 @@
 import pytest
 from api.ipt_all import IptAll
 
-
+@pytest.mark.skip(reason="有脏数据，统计不准确")
 class TestAuditIptreview:
     @pytest.mark.parametrize("orderStatus", [None, "0", "1", "2", "3", "5", "91", "90"],
                              ids=["全部", "审核打回", "审核通过", "超时通过", "自动通过", "人工审核", "可双签", "必须修改"])

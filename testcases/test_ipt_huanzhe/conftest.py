@@ -11,7 +11,7 @@ def ipt_huanzhe():
     """修改配置项-住院医嘱审查模式 为按患者"""
     ac = AlterConfig()
     ac.alter_sys_config(40003, 0)
-    ac.alter_sys_config(40106, 120)
+    # ac.alter_sys_config(40106, 120)
 
 
 @pytest.fixture(scope='function')

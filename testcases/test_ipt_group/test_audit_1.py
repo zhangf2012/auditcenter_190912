@@ -19,8 +19,9 @@ class TestAuditIpt:
         expected = None
         assert actual == expected
 
-    @pytest.mark.parametrize("audit_type,expected", [(None, None), (0, 0), (1, 0), (2, 1)],
-                             ids=["未审核", "审核打回(必须修改)", "审核打回(可双签)", "审核通过"])
+    @pytest.mark.parametrize("audit_type,expected", [(None, None), (2, 1)],
+                             ids=["未审核", "审核通过"])
+    # (0, 0), (1, 0), "审核打回(必须修改)", "审核打回(可双签)"  审核打回不会被合并
     def test_wait_ipt_merge(self, zy, audit_type, expected):
         """验证针对不同的审核方式待审页面合并任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
@@ -39,7 +40,8 @@ class TestAuditIpt:
             actual = res['data']['groupAudits']
         assert actual == expected
 
-    @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
+    @pytest.mark.parametrize("audit_type,expected", [(2, 1)])
+    # (0, 0), (1, 0) 审核打回的任务不被合并
     def test_already_ipt(self, zy, audit_type, expected):
         """验证针对不同的审核方式已审页面当前任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
@@ -49,7 +51,8 @@ class TestAuditIpt:
         actual = res['data']['groupAudits'][0]['auditStatus']
         assert actual == expected
 
-    @pytest.mark.parametrize("audit_type,expected", [(0, 0), (1, 0), (2, 1)])
+    @pytest.mark.parametrize("audit_type,expected", [(2, 1)])
+    # (0, 0), (1, 0) 审核打回的任务不被合并
     def test_already_ipt_merge(self, zy, audit_type, expected):
         """验证针对不同的审核方式已审页面合并任务的审核记录展示正确"""
         zy.send.send('mainscene', 'ipt_1', 1)
@@ -62,7 +65,7 @@ class TestAuditIpt:
         actual = res['data']['groupAudits'][0]['auditStatus']
         assert actual == expected
 
-
+@pytest.mark.skip(reason="门诊的测试用例我暂时不需要维护")
 @allure.feature('验证处方明细页面审核处方药师审核记录展示正确')
 class TestAuditOpt:
     """门诊单一审核测试用例"""

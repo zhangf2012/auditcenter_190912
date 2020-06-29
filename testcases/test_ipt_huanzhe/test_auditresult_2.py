@@ -26,7 +26,7 @@ class TestIptAuditresult:
         zy.audit_multi(engineid)
         filename = zy.send.change_data['{{ts}}']
         time.sleep(3)
-        stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/return_path/{}*.txt'.format(curdate, filename))[1]
+        stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename,filename))[1]
         content = stdout.read()
         # print(xmltodict.parse(content))
         print(content.decode('utf-8'))
@@ -43,7 +43,7 @@ class TestIptAuditresult:
         zy.ipt_audit(gp, engineid, audittype)
         filename = zy.send.change_data['{{ts}}']
         time.sleep(3)
-        stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/return_path/{}*.txt'.format(curdate, filename))[1]
+        stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename,filename))[1]
         content = stdout.read()
         # print(xmltodict.parse(content))
         print(content.decode('utf-8'))

@@ -18,10 +18,10 @@ class TestIptNew:
         zy.send.send('mainscene', 'new_1', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
-    def test_wait_med_03(self, zy):
-        """失效时间等于当前时间"""
-        zy.send.send('mainscene', 'new_2', 1)
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+    # def test_wait_med_03(self, zy):
+    #     """失效时间等于当前时间"""
+    #     zy.send.send('mainscene', 'new_2', 1)
+    #     assert (zy.selNotAuditIptList())['data']['engineInfos']
 
     def test_wait_med_04(self, zy):
         """失效时间小于当前时间"""
@@ -37,7 +37,7 @@ class TestIptNew:
 
     def test_wait_med_06(self, zy):
         """1.开具医嘱1+2，并审核通过；
-           2.开具医嘱1（修改1）+2"""
+           2.开具医嘱1（修改1）+2  --该用例跑不通，目前版本暂不做修改"""
         zy.send.send('mainscene', 'ipt_new_5', 1)
         engineid1 = zy.get_engineid(1)
         zy.audit_multi(engineid1)
@@ -234,10 +234,11 @@ class TestIptStop:
         zy.send.send('ipt', 'audit771_15', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
         engineid = zy.get_engineid(1)
-        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 0)
-        zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于等于当前时间
+        zy.audit_multi(engineid)
+        # zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid, 0)
+        zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于当前时间
         zy.send.send('ipt', 'audit771_16', 1)
-        engineid2 = zy.get_engineid(2)
+        engineid2 = zy.get_engineid(1)
         # 以下两行代码断言为合并任务取最新的失效时间
         assert (zy.orderList(engineid2, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
             zy.send.change_data['{{tsb1}}'])

@@ -4,5 +4,5 @@
 import pytest
 
 if __name__ == '__main__':
-    pytest.main(['-vs','testcase/v4_0_200228/test_audit_512.py','--alluredir=/var/jenkins_home/workspace/auditcenter_v4_0/allure-results'])
+    pytest.main(['-vs','test_ipt_group/','--alluredir=/auditcenter_v4_0/allure-results'])
     # pytest.main()
