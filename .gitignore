@@ -3,6 +3,8 @@
 *.log
 venv
 .pytest_cache
+allure-report
+allure-results
 
 
 

@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.ipt_delete
-class TestAudit_986:
+class TestAudit_968:
     """删除相关的测试用例"""
 
     def test_01(self, zy):
