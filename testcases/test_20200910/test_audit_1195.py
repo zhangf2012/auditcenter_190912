@@ -7,7 +7,7 @@ import json
 
 class TestAudit1195:
     def test_med(self, zy):
-        # 药嘱
+        # 药嘱，审方入参specifications改为specification
         zy.send.send("20200910", "audit1195_1", 1)
         engineid = zy.get_engineid(1)
         res = zy.orderList(engineid, 0)
@@ -17,7 +17,7 @@ class TestAudit1195:
         assert actual == "5mg"
 
     def test_herbmed(self, zy):
-        # 草药嘱
+        # 草药嘱，审方入参specifications改为specification
         zy.send.send("20200910", "audit1195_2", 1)
         engineid = zy.get_engineid(1)
         res = zy.herbOrderList(engineid, 0)

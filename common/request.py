@@ -38,7 +38,7 @@ class HttpRequest:
         data = param
         data = json.dumps(data)
         headers = {"Content-Type": "application/json"}
-        return self.s.put(url, data, headers=headers)
+        return self.s.put(url, data, headers=headers).json()
 
     def req(self, url, method, data=None, params=None, headers=None):
         """封装post和get请求"""
