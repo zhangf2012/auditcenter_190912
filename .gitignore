@@ -1,6 +1,6 @@
 .idea
 .git
-*.log
+logs/out.log
 venv
 .pytest_cache
 allure-report
