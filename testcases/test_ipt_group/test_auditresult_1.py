@@ -18,6 +18,7 @@ def get_conn():
 
 
 class TestIptAuditresult:
+    # 验证落地文件的审核结果
     @pytest.mark.parametrize("xmlname,is_success,status", [('ipt_1', '1', '2')],
                              ids=["待审列表审核通过"])
     def test_01(self, zy, get_conn, xmlname, is_success, status):
