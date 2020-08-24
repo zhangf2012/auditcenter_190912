@@ -3,7 +3,7 @@
 # @Author : wangmengmeng
 import allure
 
-
+@allure.link("https://jira.ipharmacare.net/browse/AUDIT-1032")
 @allure.feature('一组药开了多个，第二次相同组号发过来修改，直接以新的组替换内容')
 class TestAudit1124:
     @allure.story('同组号减少一个药')

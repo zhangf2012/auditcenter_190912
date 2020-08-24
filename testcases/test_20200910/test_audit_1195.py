@@ -3,11 +3,12 @@
 # @Author : wangmengmeng
 import re
 import json
+import allure
 
-
+@allure.feature("审方入参specifications改为specification")
 class TestAudit1195:
+    @allure.story("药嘱")
     def test_med(self, zy):
-        # 药嘱，审方入参specifications改为specification
         zy.send.send("20200910", "audit1195_1", 1)
         engineid = zy.get_engineid(1)
         res = zy.orderList(engineid, 0)
@@ -16,8 +17,8 @@ class TestAudit1195:
         actual = re.findall(r'"specifications":\s"(\d+\w+)"', json.dumps(res).encode('utf-8').decode('unicode_escape'))[0]
         assert actual == "5mg"
 
+    @allure.story("草药嘱")
     def test_herbmed(self, zy):
-        # 草药嘱，审方入参specifications改为specification
         zy.send.send("20200910", "audit1195_2", 1)
         engineid = zy.get_engineid(1)
         res = zy.herbOrderList(engineid, 0)

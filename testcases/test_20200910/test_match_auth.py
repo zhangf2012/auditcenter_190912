@@ -5,13 +5,14 @@ import pytest
 from config.config import *
 from common.request import HttpRequest
 from common.ipt import Ipt
+import allure
 
 
+@allure.feature("测试药师权限过滤条件的匹配")
 class TestMatchPlan:
-    """测试药师权限过滤条件的匹配"""
-
     authid = "77002"
 
+    @allure.story('权限匹配成功，产生待审任务')
     @pytest.mark.parametrize("body, xmlname", [({
                                                     "id": 77002,
                                                     "name": "住院修改",
@@ -45,13 +46,13 @@ class TestMatchPlan:
                                                     "iptWardList": [],
                                                     "weekList": None
                                                 }, "audit1124_1")])
-    # 权限匹配成功，产生待审任务
     def test_success(self, zy, body, xmlname):
         request = HttpRequest()
         response = request.put(auditcennter_url + "/api/v1/auditPlan/" + TestMatchPlan.authid, body)
         zy.send.send("ipt", xmlname, 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story('权限匹配失败，产生待审任务')
     @pytest.mark.parametrize("body, xmlname", [({
                                                     "id": 77002,
                                                     "name": "住院修改",
@@ -85,7 +86,6 @@ class TestMatchPlan:
                                                     "iptWardList": [],
                                                     "weekList": None
                                                 }, "audit1124_1")])
-    # 权限匹配失败不产生待审任务
     def test_fail(self, zy, body, xmlname):
         request = HttpRequest()
         response = request.put(auditcennter_url + "/api/v1/auditPlan/" + TestMatchPlan.authid, body)
