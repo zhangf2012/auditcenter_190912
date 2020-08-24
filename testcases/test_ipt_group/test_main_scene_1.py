@@ -2,14 +2,14 @@
 # @Time : 2019/12/9 15:44
 # @Author : wangmengmeng
 import pytest
+import allure
 
 
 # from pytest_assume.plugin import assume
+@allure.feature("新开医嘱测试用例")
 class TestIptNew:
-    """新开医嘱"""
 
     def test_wait_med_01(self, zy):
-        """"""
         zy.send.send('ipt', 'audit771_22', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
@@ -46,8 +46,8 @@ class TestIptNew:
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
 
+@allure.feature("修改医嘱测试用例")
 class TestIptModify:
-    """修改医嘱"""
 
     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
     def test_ipt_modify_0(self, zy, xml1, xml2, xml3):
@@ -97,13 +97,12 @@ class TestIptModify:
         res = zy.orderList(engineid, 1)
         assert '忌辛辣修改一下' in [i['specialPrompt'] for i in res['data'][zy.send.change_data['{{gp}}']]]
 
-
     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
     def test_ipt_modify_2(self, zy, xml1, xml2, xml3):
         """退药-药嘱-审核打回 测试用例"""
         zy.send.send('ipt', xml1, 1)
         engineid1 = zy.get_engineid(1)
-        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid1, 1) # 审核打回
+        zy.ipt_audit(zy.send.change_data['{{gp}}'], engineid1, 1)  # 审核打回
         zy.send.send('ipt', xml2, 1)  # 修改会重新产生任务
         res2 = zy.orderList(engineid1, 1)
         assert len(res2['data'][zy.send.change_data['{{gp}}']]) == 2
@@ -133,10 +132,11 @@ class TestIptModify:
     #     res2 = zy.mergeEngineMsgList(engineid1, 1)
 
 
+@allure.feature("撤销医嘱测试用例")
 class TestIptDelCancel:
+    @allure.story("传入删除/撤消医嘱时，原任务未审则撤销")
     @pytest.mark.parametrize("xml1", [('audit771_20')])
     def test_wait_med(self, zy, xml1):
-        """传入删除/撤消医嘱时，原任务未审则撤销"""
         zy.send.send('ipt', 'audit771_19', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', xml1, 1)
@@ -179,8 +179,8 @@ class TestIptDelCancel:
         assert actual == 0
 
 
+@allure.feature("停止医嘱测试用例")
 class TestIptStop:
-    """停止医嘱测试用例"""
 
     def test_ipt_stop_01(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
@@ -189,8 +189,7 @@ class TestIptStop:
         assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
             zy.send.change_data['{{tsb1}}'])
         assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-            zy.send.change_data['{{tsb1}}'])  # 待审页面断言当前任务，以下的断言暂有问题
-
+            zy.send.change_data['{{tsb1}}'])
         zy.audit_multi(engineid1)
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
             zy.send.change_data['{{tsb1}}'])
@@ -472,7 +471,6 @@ class TestIptStop_new:
         # assert not zy.orderList(engineid1, 0)['data']
 
 
-
 class TestIptReturnDrug:
 
     # @pytest.mark.skip(reason='just skip')
@@ -638,7 +636,7 @@ class TestOptNew:
 
 
 # class TestOptModify:
-#     @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
+# @pytest.mark.parametrize("xml1,xml2,xml3", [('audit771_36', 'audit771_37', 'audit771_38')])
 #     def test_opt_modify_0(self, mz, xml1, xml2, xml3):
 #         """修改-药嘱-未审核 测试用例"""
 #         zy.send.send('ipt', xml1, 1)

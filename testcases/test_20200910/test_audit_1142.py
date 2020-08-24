@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time : 2020/8/13 9:51
 # @Author : wangmengmeng
+import allure
 class TestAudit1142:
     def test_01(self, zy):
         """

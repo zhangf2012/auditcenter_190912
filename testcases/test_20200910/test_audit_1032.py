@@ -13,7 +13,7 @@ class TestAudit1032:
 
         zy.send.send('mainscene', 'ipt_new_5', 1)
         engineid1 = zy.get_engineid(1)
-        zy.audit_multi(engineid1)
+        # zy.audit_multi(engineid1)
         zy.send.send('mainscene', 'ipt_new_6', 1)
         engineid2 = zy.get_engineid(1)
         assert zy.orderList(engineid2, 0)['data'][zy.send.change_data["{{cgp}}"]][0]['auditMarkStatus'] is None

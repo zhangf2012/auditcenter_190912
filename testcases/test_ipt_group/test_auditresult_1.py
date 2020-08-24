@@ -4,6 +4,7 @@
 import xmltodict
 import pytest
 import datetime, time
+import allure
 from pprint import pprint
 from common.connect_linux import ConLinux
 
@@ -17,8 +18,9 @@ def get_conn():
     yield cl.get_client()
 
 
+@allure.feature('验证住院审核结果落地文件is_success、status值是否正确')
 class TestIptAuditresult:
-    # 验证落地文件的审核结果
+
     @pytest.mark.parametrize("xmlname,is_success,status", [('ipt_1', '1', '2')],
                              ids=["待审列表审核通过"])
     def test_01(self, zy, get_conn, xmlname, is_success, status):
@@ -27,7 +29,8 @@ class TestIptAuditresult:
         zy.audit_multi(engineid)
         filename = zy.send.change_data['{{ts}}']
         time.sleep(3)
-        stdout = get_conn.exec_command('cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename,filename))[1]
+        stdout = get_conn.exec_command(
+            'cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename, filename))[1]
         # stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/return_path/{}*.txt'.format(curdate, filename))[1]
         content = stdout.read()
         # print(xmltodict.parse(content))
@@ -45,7 +48,8 @@ class TestIptAuditresult:
         zy.ipt_audit(gp, engineid, audittype)
         filename = zy.send.change_data['{{ts}}']
         time.sleep(3)
-        stdout = get_conn.exec_command('cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename,filename))[1]
+        stdout = get_conn.exec_command(
+            'cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename, filename))[1]
         content = stdout.read()
         # print(xmltodict.parse(content))
         print(content.decode('utf-8'))
