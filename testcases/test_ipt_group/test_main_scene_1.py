@@ -134,7 +134,7 @@ class TestIptModify:
 
 @allure.feature("撤销医嘱测试用例")
 class TestIptDelCancel:
-    @allure.story("传入删除/撤消医嘱时，原任务未审则撤销")
+    @allure.story("传入删除/撤消医嘱时，原任务未审则撤销，且同患者再开医嘱，撤销的医嘱不会被合并")
     @pytest.mark.parametrize("xml1", [('audit771_20')])
     def test_wait_med(self, zy, xml1):
         zy.send.send('ipt', 'audit771_19', 1)
@@ -145,6 +145,7 @@ class TestIptDelCancel:
         engineid = zy.get_engineid(1)
         assert not zy.orderList(engineid, 0)['data']
 
+    @allure.story("传入删除/撤消医嘱时，原任务已审，同患者再开医嘱，撤销的医嘱不会被合并")
     @pytest.mark.parametrize("xml1", [('audit771_20')])
     def test_already_med(self, zy, xml1):
         """传入删除/撤消药嘱时，原任务已审"""
@@ -156,6 +157,7 @@ class TestIptDelCancel:
         actual = res['data']['groupAudits'][0]['rejectStatus']  # 断言已审页面医生操作记录为撤销
         assert actual == 0
 
+    @allure.story("传入删除/撤消医嘱时，原任务未审则撤销，且同患者再开医嘱，撤销的医嘱不会被合并")
     @pytest.mark.parametrize("xml1", [('audit771_25')])
     def test_wait_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务未审则撤销"""
@@ -167,6 +169,7 @@ class TestIptDelCancel:
         engineid = zy.get_engineid(1)
         assert not zy.herbOrderList(engineid, 0)['data']
 
+    @allure.story("传入删除/撤消医嘱时，原任务已审，同患者再开医嘱，撤销的医嘱不会被合并")
     @pytest.mark.parametrize("xml1", [('audit771_25')])
     def test_already_herbmed(self, zy, xml1):
         """传入删除/撤消草药嘱时，原任务已审"""
@@ -179,9 +182,8 @@ class TestIptDelCancel:
         assert actual == 0
 
 
-@allure.feature("停止医嘱测试用例")
+@allure.feature("停止医嘱测试用例旧")
 class TestIptStop:
-
     def test_ipt_stop_01(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_17', 1)  # 停止医嘱，失效时间大于等于当前时间，旧任务不撤销会重新取新的失效时间
@@ -240,33 +242,39 @@ class TestIptStop:
         # 该行代码断言为没有合并任务
         assert not zy.orderList(engineid2, 0)['data']
 
-
+@allure.feature("停止医嘱测试用例新")
 class TestIptStop_new:
+    @allure.story("长期医嘱失效时间 大于 当前时间+配置时间，产生待审任务")
     def test_ipt_stop_01(self, zy):
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_44', 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("长期医嘱失效时间 小于 当前时间+配置时间，不产生待审任务")
     def test_ipt_stop_02(self, zy):
         zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("长期医嘱失效时间 小于 当前时间，不产生待审任务")
     def test_ipt_stop_03(self, zy):
         zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("批量通过长期医嘱后重复传医嘱，已审页面审核记录只展示一次")
+    #之前有bug，展示了两次
     def test_ipt_a4(self, zy):
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
-        engineid = zy.get_engineid(1)  # 审核(批量通过)后重复传，不产生任务，且审核记录无变化与上次一致
-        zy.audit_multi(engineid)
+        engineid = zy.get_engineid(1)
+        zy.audit_multi(engineid)  # 审核(批量通过)后重复传，不产生任务，且审核记录无变化与上次一致
         zy.send.send('ipt', 'audit771_44', 1)
         zy.send.send('ipt', 'audit771_44', 1)
         res = zy.mergeEngineMsgList(engineid, 1, zy.send.change_data['{{gp}}'])
         count = len(res['data']['groupAudits'])
         assert count == 1
 
+    @allure.story("审核打回长期医嘱后重复传医嘱，已审页面审核记录只展示一次")
     def test_ipt_a5(self, zy):
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
@@ -278,19 +286,22 @@ class TestIptStop_new:
         count = len(res['data']['groupAudits'])
         assert count == 1
 
-    # 临时医嘱没有走配置项，都会产生任务
+    @allure.story("临时医嘱失效时间 大于 当前时间+配置时间，产生待审任务")
     def test_ipt_stop_011(self, zy):
         zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("临时医嘱失效时间 小于 当前时间+配置时间，不产生待审任务")
     def test_ipt_stop_021(self, zy):
         zy.send.send('ipt', 'audit771_451', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("临时医嘱失效时间 小于 当前时间，不产生待审任务")
     def test_ipt_stop_031(self, zy):
         zy.send.send('ipt', 'audit771_461', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，不产生任务
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
 
+    @allure.story("批量通过临时医嘱后重复传医嘱，已审页面审核记录只展示一次")
     def test_ipt_b4(self, zy):
         zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
@@ -302,6 +313,7 @@ class TestIptStop_new:
         count = len(res['data']['groupAudits'])
         assert count == 1
 
+    @allure.story("审核打回临时医嘱后重复传医嘱，已审页面审核记录只展示一次")
     def test_ipt_b5(self, zy):
         zy.send.send('ipt', 'audit771_441', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，产生任务
         assert (zy.selNotAuditIptList())['data']['engineInfos']
@@ -313,6 +325,7 @@ class TestIptStop_new:
         count = len(res['data']['groupAudits'])
         assert count == 1
 
+    @allure.story("多次传停嘱，只产生一个待审任务，且审核时间展示正确")
     def test_ipt_stop_04(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_44', 1)  # 停止医嘱，失效时间大于等于(当前时间+120),这里的测试数据失效时间为当前时间+180分钟，旧任务不撤销会重新取新的失效时间
@@ -339,6 +352,7 @@ class TestIptStop_new:
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
 
+    @allure.story("失效医嘱不会被合并")
     def test_ipt_stop_05(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_45', 1)  # 停止医嘱，失效时间小于(当前时间+120),这里的测试数据失效时间为当前时间+60分钟，旧任务撤销
@@ -347,6 +361,7 @@ class TestIptStop_new:
         engineid1 = zy.get_engineid(1)
         assert not zy.orderList(engineid1, 0)['data']
 
+    @allure.story("失效医嘱不会被合并")
     def test_ipt_stop_06(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，旧任务撤销
@@ -355,6 +370,7 @@ class TestIptStop_new:
         engineid1 = zy.get_engineid(1)
         assert not zy.orderList(engineid1, 0)['data']
 
+    @allure.story("有效医嘱会被合并")
     def test_ipt_stop_07(self, zy):
         """长期医嘱已审，再开停嘱不产生任务"""
         zy.send.send('ipt', 'audit771_15', 1)
@@ -374,6 +390,7 @@ class TestIptStop_new:
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
 
+    @allure.story("多次传停嘱，只产生一个待审任务，且审核时间展示正确")
     def test_ipt_stop_071(self, zy):
         """临时医嘱已审，再开停嘱不产生任务"""
         zy.send.send('ipt', 'audit771_151', 1)
@@ -384,18 +401,18 @@ class TestIptStop_new:
         assert not (zy.selNotAuditIptList())['data']['engineInfos']
         zy.send.send('ipt', 'audit771_16', 1)
         engineid1 = zy.get_engineid(1)
-        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb180}}'])
-        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
         zy.audit_multi(engineid1)
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb180}}'])
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb180}}'])
 
+    @allure.story("长期医嘱已审，再开停嘱不产生任务")
     def test_ipt_stop_072(self, zy):
-        """长期医嘱已审，再开停嘱不产生任务"""
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
@@ -415,8 +432,8 @@ class TestIptStop_new:
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
 
+    @allure.story("长期医嘱已审，再开停嘱（包含多次传停嘱）不产生任务")
     def test_ipt_stop_073(self, zy):
-        """长期医嘱已审，再开停嘱不产生任务"""
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
@@ -436,6 +453,7 @@ class TestIptStop_new:
         assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
             zy.send.change_data['{{tb180}}'])
 
+    @allure.story("原任务已审再传停嘱，再开停嘱不产生任务，且同患者再开医嘱，有效医嘱不会被合并")
     def test_ipt_stop_08(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
@@ -446,29 +464,29 @@ class TestIptStop_new:
         engineid1 = zy.get_engineid(1)
         assert not zy.orderList(engineid1, 0)['data']
 
-        # engineid1 = zy.get_engineid(1)
-        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb60}}'])
-        # assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb60}}'])
-        # zy.audit_multi(engineid1)
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb60}}'])
-        # assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
-        #     zy.send.change_data['{{tb60}}'])
+        engineid1 = zy.get_engineid(1)
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb60}}'])
+        assert (zy.orderList(engineid1, 0))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb60}}'])
+        zy.audit_multi(engineid1)
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][0]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb60}}'])
+        assert (zy.orderList(engineid1, 1))['data'][zy.send.change_data['{{gp}}']][1]['orderInvalidTime'] == int(
+            zy.send.change_data['{{tb60}}'])
 
+    @allure.story("原任务已审再传停嘱，再开停嘱不产生任务，且同患者再开医嘱，失效医嘱不会被合并")
     def test_ipt_stop_09(self, zy):
         zy.send.send('ipt', 'audit771_15', 1)
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
         zy.send.send('ipt', 'audit771_46', 1)  # 停止医嘱，失效时间小于当前时间,这里的测试数据失效时间为当前时间-60分钟，修改医嘱不产生待审任务
         zy.send.send('ipt', 'audit771_48', 1)
-        pass
-        # assert not (zy.selNotAuditIptList())['data']['engineInfos']
-        # zy.send.send('ipt', 'audit771_16', 1)
+        assert not (zy.selNotAuditIptList())['data']['engineInfos']
+        zy.send.send('ipt', 'audit771_16', 1)
 
-        # engineid1 = zy.get_engineid(1)
-        # assert not zy.orderList(engineid1, 0)['data']
+        engineid1 = zy.get_engineid(1)
+        assert not zy.orderList(engineid1, 0)['data']
 
 
 class TestIptReturnDrug:
