@@ -31,9 +31,7 @@ class TestIptAuditresult:
         time.sleep(3)
         stdout = get_conn.exec_command(
             'cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename, filename))[1]
-        # stdout = get_conn.exec_command('cat /tmp/hisresult/{}/H0003/return_path/{}*.txt'.format(curdate, filename))[1]
         content = stdout.read()
-        # print(xmltodict.parse(content))
         print(content.decode('utf-8'))
         assert xmltodict.parse(content)['root']['result']['message']['is_success'] == is_success
         assert xmltodict.parse(content)['root']['result']['message']['status'] == status
