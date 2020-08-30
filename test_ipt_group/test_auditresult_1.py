@@ -28,7 +28,7 @@ class TestIptAuditresult:
         engineid = zy.get_engineid(1)
         zy.audit_multi(engineid)
         filename = zy.send.change_data['{{ts}}']
-        time.sleep(3)
+        # time.sleep(3)
         stdout = get_conn.exec_command(
             'cat /tmp/hisresult/{}}/H0003/IPT/{}/AUDIT_RESULT/OUT_{}*.txt'.format(curdate, filename, filename))[1]
         content = stdout.read()
