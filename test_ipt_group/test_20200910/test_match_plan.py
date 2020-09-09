@@ -52,7 +52,7 @@ class TestMatchPlan:
         zy.send.send("ipt", xmlname, 1)
         assert (zy.selNotAuditIptList())['data']['engineInfos']
 
-    @allure.story('方案匹配失败，产生待审任务')
+    @allure.story('方案匹配失败，不产生待审任务')
     @pytest.mark.parametrize("body, xmlname", [({
                                                     "id": 77002,
                                                     "name": "住院修改",
@@ -86,7 +86,9 @@ class TestMatchPlan:
                                                     "iptWardList": [],
                                                     "weekList": None
                                                 }, "audit1124_1")])
-    # 方案匹配失败不产生待审任务
+
+
+    # 方案匹配失败不产生待审任务124
     def test_fail(self, zy, body, xmlname):
         request = HttpRequest()
         response = request.put(auditcennter_url + "/api/v1/auditPlan/" + TestMatchPlan.planid, body)
