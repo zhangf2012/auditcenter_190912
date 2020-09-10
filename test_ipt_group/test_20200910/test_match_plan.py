@@ -97,4 +97,4 @@ class TestMatchPlan:
         request = HttpRequest()
         response = request.put(auditcennter_url + "/api/v1/auditPlan/" + TestMatchPlan.planid, body)
         zy.send.send("ipt", xmlname, 1)
-        assert (zy.selNotAuditIptList())['data']['engineInfos']
+        assert (zy.selNotAuditIptList())['data']['engineInfos']#1
